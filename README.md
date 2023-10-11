@@ -1,7 +1,7 @@
 ### Hi there 👋
 
 <!--
-**alchemz/alchemz** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+**henokb/henokb** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 Here are some ideas to get you started:
 
 - 🔭 I’m currently working on ...
@@ -14,7 +14,9 @@ Here are some ideas to get you started:
 - ⚡ Fun fact: ...
 -->
 
-Lily (Xianling) Zhang is a Machine Learning Research Scientist at Ford Autonomy, Palo Alto, CA, located at [Ford Greenfield Labs, Stanford Research Park](https://corporate.ford.com/operations/locations/silicon-valley.html). She is working on Perception and Prediction for autonomous driving tasks. 
+I'm an AI/ML Researcher. Engaging in research that seeks not just to unravel, but also to beautifully weave together the threads of technology and linguistics, in an ongoing journey through the expansive field of NLP.
+
+
 
 ## 🔭 Research projects:
 - 3D perception and motion prediction
@@ -25,4 +27,4 @@ Lily (Xianling) Zhang is a Machine Learning Research Scientist at Ford Autonomy,
 ## 💬 Recent News:
 - One of her recent 2022 CVPR publication on scene relighting has been accepted to NVIDIA GTC 2023. She is looking forward to sharing the work with the community. Feel free to bring some tough questions in the session.😄
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/alchemz/) 
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/henokb/) 

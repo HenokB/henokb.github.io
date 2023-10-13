@@ -25,7 +25,7 @@
 - title: Experience
   type: time_table
   contents:
-    - title: Machine Learning Rsearcher
+    - title: Machine Learning Researcher
       institution: Ethiopian Artifical Intelligence Institue
       year: 2023 - Present
       description:
@@ -62,8 +62,8 @@
 #       year: 2015-now
 #       description: A beautiful, simple, clean, and responsive Jekyll theme for academics.
 
-# - title: Honors and Awards
-#   type: time_table
+- title: Honors and Awards
+  type: time_table
 #   contents:
 #     - year: 1921
 #       items: 
@@ -73,8 +73,8 @@
 #       items: 
 #         - Max Planck Medal
 
-# - title: Academic Interests
-#   type: nested_list
+- title: Academic Interests
+  type: nested_list
 #   contents:
 #     - title: Topic 1.
 #       items: 

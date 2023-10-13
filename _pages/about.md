@@ -10,7 +10,7 @@ profile:
   image_circular: false # crops the image to make it circular
   address: 
     # <p> Ford Greenfield Labs, building b</p>
-    <p>Addis Ababa, 1000</p>
+    <p>Addis Ababa</p>
     <p>Ethiopia</p>
 
 news: true  # includes a list of news items
@@ -18,7 +18,7 @@ latest_posts: false  # includes a list of the newest posts
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
-Exploring the depths of Machine Learning and Natural Language Processing with a modest curiosity and continuous learner mindset. Engaging in research that seeks not just to unravel, but also to beautifully weave together the threads of technology and linguistics, in an ongoing journey through the expansive field of NLP. I'm currently ML Researcher/enginner at [Ethiopian Artificial Intelligence Institute](https://www.aii.et/).
+Exploring the depths of Machine Learning and Natural Language Processing with a modest curiosity and continuous learner mindset. Engaging in research that seeks not just to unravel, but also to beautifully weave together the threads of technology and linguistics, in an ongoing journey through the expansive field of NLP. I'm currently ML Researcher/enginner at [Ethiopian AI Institute](https://www.aii.et/).
 
 
 <!-- My research interests include 

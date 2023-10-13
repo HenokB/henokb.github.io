@@ -6,5 +6,3 @@ related_posts: false
 ---
 
 I joined Ethiopian AI Institue.
-
-

@@ -7,5 +7,3 @@ related_posts: false
 I'll be attending <a href="http://deeplearningindaba.com/2023">Deep Learning Indabab
 
 in Accra, Ghana from Sept 2 - Sept 10.
-
-

@@ -5,4 +5,3 @@ inline: true
 related_posts: false
 ---
 Selected as <a href="https://top.mlh.io/2023/profiles/henok-ademtew">MLH Top 50 Hacker.
-

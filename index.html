@@ -13,19 +13,23 @@
     <header>
         <nav>
             <ul class="nav-links">
-                <!-- <li><a href="#">About</a></li>
+                <li><a href="#">About</a></li>
                 <li><a href="#">Projects</a></li>
                 <li><a href="#">CV</a></li>
-                <li><a href="#">Misc.</a></li> -->
+                <li><a href="#">Misc.</a></li>
             </ul>
         </nav>
         <div class="container header-container">
             <div class="header-text">
-                <h1>Henok Biadglign Ademtew</h1>
+                <h1>Hey👋</h1>
                 <p>I'm an ML Research Engineer at the Ethiopian AI Institute (EAII), I'm interested in multilingual
                     and multimodal systems, deep learning, and probabilistic methods. I completed my BS in 
                     Computer Science from Kotebe University in 2023. You can reach out to me at henokb2124 at gmail dotcom.</p>
+                <p>
+                    
+                </p>
             </div>
+            
             <div class="profile-pic-container">
                 <img src="henok.jpg" alt="Henok Biadglign Ademtew" class="profile-pic">
             </div>
@@ -33,6 +37,12 @@
         </div>
         <div class="container">
             <div class="social-icons">
+                <p>Henok Biadglign Ademtew</p>
+            </div>
+            
+
+            <div class="social-icons">
+                
                 <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en" target="_blank"><i class="fa-brands fa-google-scholar"></i></a>
                 <a href="https://github.com/henokb" target="_blank"><i class="fab fa-github"></i></a>
                 <a href="https://linkedin.com/in/yourprofile" target="_blank"><i class="fab fa-linkedin"></i></a>
@@ -94,8 +104,33 @@
                 <div class="publication-links">
                     <a class="publication-btn" href="#">Paper</a>
 
+
                 </div>
             </div>
+            <!-- Citation Modal -->
+            <div id="citation-modal-neurips2024" class="citation-modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeCitationPopup('neurips2024')">&times;</span>
+                    <h2>Cite</h2>
+                    <textarea readonly>
+@misc{romero2024cvqaculturallydiversemultilingualvisual,
+    title={CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark}, 
+    author={David Romero and Chenyang Lyu and Haryo Akbarianto Wibowo and Teresa Lynn and Injy Hamed and Aditya Nanda Kishore and Aishik Mandal and Alina Dragonetti and Artem Abzaliev and Atnafu Lambebo Tonja and Bontu Fufa Balcha and Chenxi Whitehouse and Christian Salamea and Dan John Velasco and David Ifeoluwa Adelani and David Le Meur and Emilio Villa-Cueva and Fajri Koto and Fauzan Farooqui and Frederico Belcavello and Ganzorig Batnasan and Gisela Vallejo and Grainne Caulfield and Guido Ivetta and Haiyue Song and Henok Biadglign Ademtew and Hernán Maina and Holy Lovenia and Israel Abebe Azime and Jan Christian Blaise Cruz and Jay Gala and Jiahui Geng and Jesus-German Ortiz-Barajas and Jinheon Baek and Jocelyn Dunstan and Laura Alonso Alemany and Kumaranage Ravindu Yasas Nagasinghe and Luciana Benotti and Luis Fernando D'Haro and Marcelo Viridiano and Marcos Estecha-Garitagoitia and Maria Camila Buitrago Cabrera and Mario Rodríguez-Cantelar and Mélanie Jouitteau and Mihail Mihaylov and Mohamed Fazli Mohamed Imam and Muhammad Farid Adilazuarda and Munkhjargal Gochoo and Munkh-Erdene Otgonbold and Naome Etori and Olivier Niyomugisha and Paula Mónica Silva and Pranjal Chitale and Raj Dabre and Rendi Chevi and Ruochen Zhang and Ryandito Diandaru and Samuel Cahyawijaya and Santiago Góngora and Soyeong Jeong and Sukannya Purkayastha and Tatsuki Kuribayashi and Thanmay Jayakumar and Tiago Timponi Torrent and Toqeer Ehsan and Vladimir Araujo and Yova Kementchedjhieva and Zara Burzo and Zheng Wei Lim and Zheng Xin Yong and Oana Ignat and Joan Nwatu and Rada Mihalcea and Thamar Solorio and Alham Fikri Aji},
+    year={2024},
+    eprint={2406.05967},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV},
+    url={https://arxiv.org/abs/2406.05967}, 
+}
+                    </textarea>
+                    <div class="modal-actions">
+                        <button onclick="copyCitation('citation-modal-neurips2024')">Copy</button>
+                        <button onclick="downloadCitation('neurips2024')">Download</button>
+                    </div>
+                    <span id="citation-modal-neurips2024-copy-notification" class="copy-notification">Copied to clipboard!</span>
+                </div>
+            </div>
+
             
             <div class="publication-item">
                 <span class="label neurips" style="background-color: #582a92; color: white;">Neurips 2024</span>
@@ -107,20 +142,63 @@
                     <a class="publication-btn"  href="https://arxiv.org/abs/2406.05967">Paper</a>
                     <a class="publication-btn"  href="https://cvqa-benchmark.org/">Website</a>
                     <a class="publication-btn"  href="https://huggingface.co/datasets/afaji/cvqa">Dataset</a>
+                    <a href="#" class="publication-btn" onclick="openCitationPopup('neurips2024')">Cite</a>
+
+            
                 </div>
             </div>
-
+            <div id="citation-modal-acl2024" class="citation-modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeCitationPopup('acl2024')">&times;</span>
+                    <h2>Cite</h2>
+                    <textarea readonly>
+@inproceedings{ademtew-birbo-2024-age,
+title = "{AGE}: {A}mharic, {G}e{'}ez and {E}nglish Parallel Dataset",
+author = "Ademtew, Henok  and
+    Birbo, Mikiyas",
+editor = "Ojha, Atul Kr.  and
+    Liu, Chao-hong  and
+    Vylomova, Ekaterina  and
+    Pirinen, Flammie  and
+    Abbott, Jade  and
+    Washington, Jonathan  and
+    Oco, Nathaniel  and
+    Malykh, Valentin  and
+    Logacheva, Varvara  and
+    Zhao, Xiaobing",
+booktitle = "Proceedings of the Seventh Workshop on Technologies for Machine Translation of Low-Resource Languages (LoResMT 2024)",
+month = aug,
+year = "2024",
+address = "Bangkok, Thailand",
+publisher = "Association for Computational Linguistics",
+url = "https://aclanthology.org/2024.loresmt-1.14",
+doi = "10.18653/v1/2024.loresmt-1.14",
+pages = "139--145",
+abstract = "African languages are not well-represented in Natural Language Processing (NLP). The main reason is a lack of resources for training models. Low-resource languages, such as Amharic and Ge{'}ez, cannot benefit from modern NLP methods because of the lack of high-quality datasets. This paper presents AGE, an open-source tripartite alignment of Amharic, Ge{'}ez, and English parallel dataset. Additionally, we introduced a novel, 1,000 Ge{'}ez-centered sentences sourced from areas such as news and novels. Furthermore, we developed a model from a multilingual pre-trained language model, which brings 12.29 and 30.66 for English-Ge{'}ez and Ge{'}ez to English, respectively, and 9.39 and 12.29 for Amharic-Ge{'}ez and Ge{'}ez-Amharic respectively.",
+}
+                        
+                    </textarea>
+                    <div class="modal-actions">
+                        <button onclick="copyCitation('citation-modal-acl2024')">Copy</button>
+                        <button onclick="downloadCitation('acl2024')">Download</button>
+                    </div>
+                    <span id="citation-modal-acl2024-copy-notification" class="copy-notification">Copied to clipboard!</span>
+                </div>
+            </div>
+            
             <div class="publication-item">
                 <span class="label acl" style="background-color: #c50505; color: white;">LoResMT Workshop, ACL 2024</span>
                 <p><strong>AGE: Amharic, Ge’ez and English Parallel Dataset</strong></p>
                 <p><strong>Henok Biadglign Ademtew</strong>, Mikiyas Girma Birbo</p>
+                <p>Also presented at AfricaNLP at ICLR 2024</p>
                 <p><i>Proceedings of the The Seventh Workshop on Technologies for Machine Translation of Low-Resource Languages (LoResMT 2024), ACL 2024</i></p> 
-                
                 <div class="publication-links">
 
                     <a class="publication-btn"  href="https://aclanthology.org/2024.loresmt-1.14/">Paper</a>
                     <a class="publication-btn"  href="https://www.loresmt.org/accepted-papers">Website</a>
                     <a class="publication-btn"  href="https://huggingface.co/datasets/Henok/age_dataset">Dataset</a>
+                    <a href="#" class="publication-btn" onclick="openCitationPopup('acl2024')">Cite</a>
+
                 </div>
             </div>
         </div>
@@ -129,7 +207,7 @@
     <section class="contact">
         <div class="container">
             <h2>Contact</h2>
-            <div class="social-icons">
+            <div class="social-iconsp">
                 <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en" target="_blank"><i class="fa-brands fa-google-scholar"></i></a>
                 <a href="https://github.com/henokb" target="_blank"><i class="fab fa-github"></i></a>
                 <a href="https://linkedin.com/in/yourprofile" target="_blank"><i class="fab fa-linkedin"></i></a>
@@ -144,5 +222,8 @@
             <p>&copy; 2024 Henok Biadglign Ademtew. All rights reserved.</p>
         </div>
     </footer>
+    <!-- Add this just before the closing </body> tag -->
+<script src="script.js"></script>
+
 </body>
 </html>

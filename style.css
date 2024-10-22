@@ -18,6 +18,8 @@ header {
     border-bottom: 1px solid #ffffff;
 }
 
+
+
 .container {
     width: 80%;
     max-width: 1200px;
@@ -43,7 +45,7 @@ header p {
 }
 
 header .profile-pic {
-    width: 350px;
+    width: 250px;
     height: auto;
     border-radius: 10px;
 }

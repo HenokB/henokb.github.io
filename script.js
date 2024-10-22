@@ -55,3 +55,5 @@ function downloadCitation(modalId) {
     link.download = `${modalId}.bib`;
     link.click();
 }
+
+

@@ -1,240 +1,241 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Henok Ademtew | Researcher</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/4e5ec95d7e.js" crossorigin="anonymous"></script>
+  <meta charset="utf-8">
+  <title>Henok Ademtew</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/4e5ec95d7e.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #000000;
+      --text: #e0e0e0;
+      --link: #4ea8de;
+      --card: #1c1c1c;
+    }
+
+    body.light {
+      --bg: #ffffff;
+      --text: #111111;
+      --link: #0366d6;
+      --card: #f5f5f5;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      max-width: 960px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      opacity: 0;
+      animation: fadeIn 1.5s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+
+    .left {
+      flex: 1;
+      min-width: 250px;
+      max-width: 300px;
+    }
+    
+
+    .right {
+      flex: 2;
+      min-width: 300px;
+    }
+
+    img.profile {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: var(--text);
+    }
+    h2 {
+      border-left: 5px solid #4ea8de;
+      padding-left: 10px;
+      margin-bottom: 1rem;
+    }
+
+
+    hr {
+      margin: 2rem 0;
+      border-color: #444;
+    }
+
+    .social-links i {
+      transition: transform 0.3s ease;
+    }
+
+    .social-links i:hover {
+      transform: scale(1.4);
+    }
+    .paper-card {
+      background: var(--card);
+      padding: 15px;
+      border-radius: 8px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 15px;
+    }
+
+    .paper-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+
+
+    .toggle-theme {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--card);
+      border: 1px solid #444;
+      color: var(--text);
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .toggle-theme:hover {
+      background: #333;
+    }
+    .name-hover {
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+  </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="#">About</a></li>
-                <li><a href="#">Projects</a></li>
-                <li><a href="#">CV</a></li>
-                <li><a href="#">Misc.</a></li>
-            </ul>
-        </nav>
-        <div class="container header-container">
-            <div class="header-text">
-                <h1>Hey👋</h1>
-                <p>I'm an ML Research Engineer at the <a href="https://www.vella.ai/">Vella.ai</a>, I'm interested in multilingual
-                    and multimodal systems, deep learning, and probabilistic methods. I completed my BS in 
-                    Computer Science from Kotebe University in 2023. You can reach out to me at henokb2124 at gmail dotcom.</p>
-                <p>
-                    
-                </p>
-            </div>
-            
-            <div class="profile-pic-container">
-                <img src="henok.jpg" alt="Henok Biadglign Ademtew" class="profile-pic">
-            </div>
-            
-        </div>
-        <div class="container">
-            <div class="social-icons">
-                <p>Henok Biadglign Ademtew</p>
-            </div>
-            
 
-            <div class="social-icons">
-                
-                <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en" target="_blank"><i class="fa-brands fa-google-scholar"></i></a>
-                <a href="https://github.com/henokb" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/henok-b-ademtew-7729b2183/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                <a href="https://x.com/henokademtew" target="_blank"><i class="fab fa-twitter"></i></a>
-                <a href="https://www.semanticscholar.org/author/Henok-Biadglign-Ademtew/2305619369" target="_blank"><i class="fa-solid fa-paperclip"></i> </a>
+  <button class="toggle-theme" onclick="toggleTheme()" id="themeToggle">🌙</button>
 
 
-            </div>
-        </div>
-    </header>
+  <div class="container">
+    <div class="left">
+      <img src="resources/henok.jpg" alt="Henok Ademtew" class="profile">
+      <p>henokb2124 at gmail dot com</p>
 
-    <section class="news">
-        <div class="container">
-            <h2>News</h2>
-            <ul class="timeline">
-                <li>
-                    <span class="date">Sept, 2024</span>
-                    <div class="details">Two papers got accepted at Neurips 2024, one in workshop and one in datasets and benchmarks track.</div>
-                </li>
-                <li>
-                    <span class="date">Sept, 2024</span>
-                    <div class="details">Co-organized the annual <strong><a href="http://deeplearningindaba.com/2024/" style="color: black; text-decoration: none; font-weight: bold;">Deep Learning Indaba</a></strong>.</div>
-                </li>
-                <li>
-                    <span class="date">Aug, 2024</span>
-                    <div class="details">I presented our paper <strong><a href="https://aclanthology.org/2024.loresmt-1.14/" style="color: black; text-decoration: none; font-weight: bold;">AGE</a></strong> in the LoResMT workshop at ACL 2024 in Thailand.</div>
-                </li>
-                <li>
-                    <span class="date">July, 2024</span>
-                    <div class="details">Served as a TA for the <strong><a href="https://www.acvss.ai/" style="color: black; text-decoration: none; font-weight: bold;">African Computer Vision Summer School (ACVSS).</a></strong>.</div>
-                </li>
-                <li>
-                    <span class="date">Feb, 2024</span>
-                    <div class="details">Started leading a community at <strong><a href="https://cohere.com/research" style="color: black; text-decoration: none; font-weight: bold;">Cohere for AI</a></strong>.</div>
-                </li>
-                <li>
-                    <span class="date">Dec, 2023</span>
-                    <div class="details">Gave a hands-on Workshop on LLMs, at <strong>DevFest Addis</strong>.</div>
-                </li>
-                <li>
-                    <span class="date">Aug, 2023</span>
-                    <div class="details">Became <strong><a href="https://mlh.io/" style="color: black; text-decoration: none; font-weight: bold;">MLH's</a></strong> top 50 hacker for 2023.</div>
-                </li>
-                <li>
-                    <span class="date">Nov, 2022</span>
-                    <div class="details">Spoke about Hackathons and OpenSource Community at <strong><a href="https://devopsdays.org/events/2022-chattanooga/welcome/" style="color: black; text-decoration: none; font-weight: bold;">Devopsdays Chattanooga.</a></strong></div>
-                </li>
-                <li>
-                    <span class="date">July, 2022</span>
-                    <div class="details">Student Volunteer (virtual) at <strong><a href="https://icml.cc/" style="color: black; text-decoration: none; font-weight: bold;">ICML</a></strong>.</div>
-                </li>
-            </ul>
-        </div>
-        
-    </section>
+      <div class="social-links">
+        <p><i class="fa-brands fa-google-scholar"></i> <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en">Scholar</a></p>
+        <p><i class="fab fa-github"></i> <a href="https://github.com/henokb">GitHub</a></p>
+        <p><i class="fab fa-twitter"></i> <a href="https://x.com/henokademtew">Twitter</a></p>
+        <p><i class="fab fa-brands"></i> <a href="blog/index.html">Blogs</a></p>
 
-    <section class="publications">
-        <div class="container">
-            <div class="container">
-            <h2>Publications</h2>
-
-            <div class="publication-item">
-                <span class="label neurips" style="background-color: #e8342b; color: white;">arxiv preprint</span>
-                <p><strong>All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages</strong></p>
-                <p>Ashmal Vayani, Dinura Dissanayake, {...}, <strong>Henok Biadglign Ademtew</strong>, {...}, Thamar Solorio, Monojit Choudhury, Ivan Laptev, Mubarak Shah, Salman Khan, Fahad Khan </p>
-                <p><i>Arxiv preprint</i></p>
-                
-                <div class="publication-links">
-                    <a class="publication-btn"  href="https://arxiv.org/pdf/2411.16508">Paper</a>
-                    <!-- <a class="publication-btn"  href="">Website</a>
-                    <a class="publication-btn"  href="">Dataset</a> -->
-                    <!-- <a href="#" class="publication-btn" onclick="openCitationPopup('neurips2024')">Cite</a> -->
-
-            
-                </div>
-            </div>
-                
-            <div class="publication-item">
-                <span class="label neurips" style="background-color: #e8342b; color: white;">NAACL 2025</span>
-                <p><strong>ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding</strong></p>
-                <p>Israel Abebe Azime, Atnafu Lambebo Tonja, Tadesse Destaw Belay, Yonas Chanie, Bontu Fufa Balcha, Negasi Haile Abadi, <strong>Henok Biadglign Ademtew</strong>, Mulubrhan Abebe Nerea, Debela Desalegn Yadeta, Derartu Dagne Geremew, Philipp Slusallek, Thamar Solorio, Dietrich Klakow</p>
-                <p><i>Arxiv preprint</i></p>
-                
-                <div class="publication-links">
-                    <a class="publication-btn"  href="https://arxiv.org/abs/2411.05049">Paper</a>
-                    <!-- <a class="publication-btn"  href="">Website</a>
-                    <a class="publication-btn"  href="">Dataset</a> -->
-                    <!-- <a href="#" class="publication-btn" onclick="openCitationPopup('neurips2024')">Cite</a> -->
-
-            
-                </div>
-            </div>
-            
-
-            <div class="publication-item">
-                <span class="label neurips" style="background-color: #582a92; color: white;">BAI Workshop, Neurips 2024</span>
-                <p><strong>Many-Shot In-Context Learning: A Solution or Just an Enhancement for Low-Resource NLP?</strong></p>
-                <p><strong>Henok Biadglign Ademtew</strong>, Mikiyas Girma Birbo</p>
-                <p><i>Black in AI workshop @Neurips 2024</i></p>
-                
-                <div class="publication-links">
-                    <a class="publication-btn" href="#">Paper</a>
-
-
-                </div>
-            </div>
-            <!-- Citation Modal -->
-
-            <div class="publication-item">
-                <span class="label neurips" style="background-color: #582a92; color: white;">Neurips 2024</span>
-                <p><strong>CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark</strong></p>
-                <p>David Romero, Chenyang Lyu, {...}, <strong>Henok Biadglign Ademtew</strong>,{...}, Oana Ignat, Rada Mihalcea, Thamar Solorio, Alham Fikri Aji</p>
-                <p><i>Neurips 2024 Datasets and Benchmarks</i> <span class="label award"> 🎖Oral</span></p>
-                
-                <div class="publication-links">
-                    <a class="publication-btn"  href="https://arxiv.org/abs/2406.05967">Paper</a>
-                    <a class="publication-btn"  href="https://cvqa-benchmark.org/">Website</a>
-                    <a class="publication-btn"  href="https://huggingface.co/datasets/afaji/cvqa">Dataset</a>
-                    <!-- <a href="#" class="publication-btn" onclick="openCitationPopup('neurips2024')">Cite</a> -->
-
-            
-                </div>
-            </div>
-                     
-         
-            
-            <div class="publication-item">
-                <span class="label acl" style="background-color: #c50505; color: white;">LoResMT Workshop, ACL 2024</span>
-                <p><strong>AGE: Amharic, Ge’ez and English Parallel Dataset</strong></p>
-                <p><strong>Henok Biadglign Ademtew</strong>, Mikiyas Girma Birbo</p>
-                <p><i>Proceedings of the The Seventh Workshop on Technologies for Machine Translation of Low-Resource Languages (LoResMT 2024), ACL 2024</i></p> 
-                <p>This paper was also presented in AfricaNLP at ICLR 2024</p>
-                <div class="publication-links">
-
-                    <a class="publication-btn"  href="https://aclanthology.org/2024.loresmt-1.14/">Paper</a>
-                    <a class="publication-btn"  href="https://www.loresmt.org/accepted-papers">Website</a>
-                    <a class="publication-btn"  href="https://huggingface.co/datasets/Henok/age_dataset">Dataset</a>
-                    <!-- <a href="#" class="publication-btn" onclick="openCitationPopup('acl2024')">Cite</a> -->
-
-                </div>
-            </div>
-        </div>
-    </section>
-        
-    <section class="projects">
-        <div class="container">
-        <h2>Projects</h2>
-
-        <div class="project-item">
-            <div class="project-image">
-                <img src="aya.png" alt="Project AYA">
-            </div>
-            <div class="project-details">
-                <h3>AYA: Cohere For AI</h3>
-                <p>
-                    I collaborated in the development of <a href="https://cohere.com/research/aya">AYA</a> an initiative to accelerate multilingual AI progress. It is part of Cohere for AI, a project to make AI more accessible. I lead the Amharic language team as the ambassador and main contributor. 
- 
-                    Aya is now an open source SOTA multilingual dataset. It is now vailable on <a href="https://huggingface.co/CohereForAI/aya-101">Huggingface🤗 Datasets! </a> Cohere's and C4AI new open source model, ⌘R+, was trained with our work! The model is now available on <a href="https://huggingface.co/CohereForAI/aya-101">Huggingface🤗 Models!</a> 
-                          
-                
-                
-                </p>
-            </div>
-        </div>
-    
-        
+      </div>
     </div>
 
-    </section>
-    
-    
+    <div class="right">
+      <h1>Henok Biadglign Ademtew</h1> 
 
-    <section class="contact">
-        <div class="container">
-            <h2>Contact</h2>
-            <div class="social-iconsp">
-                <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en" target="_blank"><i class="fa-brands fa-google-scholar"></i></a>
-                <a href="https://github.com/henokb" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/henok-b-ademtew-7729b2183/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                <a href="https://x.com/henokademtew" target="_blank"><i class="fab fa-twitter"></i></a>
-                <a href="https://www.semanticscholar.org/author/Henok-Biadglign-Ademtew/2305619369" target="_blank"><i class="fa-solid fa-paperclip"></i> </a>
-            </div>
-        </div>
-    </section>
+      
+      
+      <p>I’m an ML Engineer at <a href="https://www.vella.ai/">Vella.ai</a>. I'm interested in working with VLMs, multilinguality NLP, and deep learning methods.</p>
+       
+      <p>My research explores fine/instruction tuning, culturally aware benchmarks, and probabilistic modeling. I've also worked on building language models and tools for underrepresented languages.</p>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Henok Biadglign Ademtew. All rights reserved.</p>
+      <hr>
+      <h2>Papers</h2>
+
+      <div style="line-height: 1.8;">
+        <div class="paper-card"> 
+        <p>
+          <strong>ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding</strong><br>
+          I Azime, A Tonja, T Belay,  ..., <u>Henok B Ademtew</u>,  ..., T Solorio, D Klakow<br>
+          <b>NAACL 2025</b> | 
+          <a href="https://arxiv.org/abs/2411.05049">paper</a>
+        </p>
         </div>
-    </footer>
-    <!-- Add this just before the closing </body> tag -->
-<script src="script.js"></script>
+
+        <div class="paper-card"> 
+        <p>
+          <strong>All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages</strong><br>
+          A Vayani, D Dissanayake, ..., <u>Henok B Ademtew</u>,..., M Choudhury, T Solorio, M Shah, I Laptev, S Khan<br>
+          <b>CVPR 2025 (Highlight)</b> | 
+          <a href="https://arxiv.org/pdf/2411.16508">paper</a> | <a href="https://mbzuai-oryx.github.io/ALM-Bench/">website</a>
+        </p>
+      </div>
+
+      <div class="paper-card"> 
+        <p>
+          <strong>CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark</strong><br>
+          D Romero, C Lyu,  ...,<u>Henok B Ademtew</u>, ..., R Mihalcea, T Solorio, A Fikri Aji<br>
+          <b>NeurIPS 2024 Datasets & Benchmarks (Oral)</b> | 
+          <a href="https://arxiv.org/abs/2406.05967">paper</a> | <a href="https://cvqa-benchmark.org/">website</a>
+        </p>
+      </div>
+      <div class="paper-card"> 
+        <p>
+          <strong>Many-Shot In-Context Learning: A Solution or Just an Enhancement for Low-Resource NLP?</strong><br>
+          <u>Henok B Ademtew</u>, Mikiyas Girma Birbo<br>
+          <b>Black in AI Workshop @NeurIPS 2024</b> | 
+          <a href="#">paper</a>
+        </p>
+      </div>
+      
+      <div class="paper-card"> 
+        <p>
+          <strong>AGE: Amharic, Ge’ez and English Parallel Dataset</strong><br>
+          <u>Henok B Ademtew</u>, Mikiyas Girma Birbo<br>
+          <b>LoResMT Workshop @ACL 2024</b> | 
+          <a href="https://aclanthology.org/2024.loresmt-1.14/">paper</a> | <a href="https://henokb.github.io/AGE-Dataset/">website</a> | <a href="https://huggingface.co/datasets/Henok/age_dataset">dataset</a>
+        </p>
+      </div>
+      </div>
+
+      <hr>
+      
+    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" 
+        style="position: fixed; bottom: 20px; right: 20px; padding:8px 12px; background:var(--card); border:none; border-radius:8px; cursor:pointer;">
+        ⬆️
+</button>
+
+  </div>
+
+
+
+  <script>
+    function toggleTheme() {
+      const isLight = document.body.classList.toggle('light');
+      document.getElementById('themeToggle').innerText = isLight ? '☀️' : '🌙';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light');
+        document.getElementById('themeToggle').innerText = '☀️';
+      }
+    };
+
+  </script>
+  
 
 </body>
 </html>

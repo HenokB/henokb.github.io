@@ -106,7 +106,34 @@
       transform: translateY(-5px);
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
+    .paper-entry {
+  display: flex;
+  align-items: stretch;
+  gap: 15px;
+  margin-bottom: 25px;
+  background: var(--card);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
+.paper-entry:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.paper-thumb {
+  width: 120px;
+  height: auto;
+  object-fit: cover;
+}
+
+.paper-info {
+  padding: 10px 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
 
     .toggle-theme {
@@ -132,9 +159,11 @@
 
   </style>
 </head>
-<body>
+<body class="light">
+
 
   <button class="toggle-theme" onclick="toggleTheme()" id="themeToggle">🌙</button>
+  
 
 
   <div class="container">
@@ -146,7 +175,7 @@
         <p><i class="fa-brands fa-google-scholar"></i> <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en">Scholar</a></p>
         <p><i class="fab fa-github"></i> <a href="https://github.com/henokb">GitHub</a></p>
         <p><i class="fab fa-twitter"></i> <a href="https://x.com/henokademtew">Twitter</a></p>
-        <p><i class="fab fa-brands"></i> <a href="blog/index.html">Blogs</a></p>
+        <p><i class="fas fa-pen-nib"></i> <a href="blog/index.html">Blogs</a></p>
 
       </div>
     </div>
@@ -163,51 +192,44 @@
       <hr>
       <h2>Papers</h2>
 
-      <div style="line-height: 1.8;">
-        <div class="paper-card"> 
-        <p>
-          <strong>ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding</strong><br>
-          I Azime, A Tonja, T Belay,  ..., <u>Henok B Ademtew</u>,  ..., T Solorio, D Klakow<br>
-          <b>NAACL 2025</b> | 
-          <a href="https://arxiv.org/abs/2411.05049">paper</a>
-        </p>
-        </div>
+<div style="line-height: 1.8;">
+  <div class="paper-entry">
+    <img class="paper-thumb" src="resources/proverbeval.png" alt="ProverbEval">
+    <div>
+      <p><a href="https://arxiv.org/abs/2411.05049"><strong>ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding</strong></a><br>
+      I Azime, A Tonja, T Belay, <u>Henok B Ademtew</u>, T Solorio, D Klakow<br>
+      <b>NAACL 2025</b></p>
+    </div>
+  </div>
 
-        <div class="paper-card"> 
-        <p>
-          <strong>All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages</strong><br>
-          A Vayani, D Dissanayake, ..., <u>Henok B Ademtew</u>,..., M Choudhury, T Solorio, M Shah, I Laptev, S Khan<br>
-          <b>CVPR 2025 (Highlight)</b> | 
-          <a href="https://arxiv.org/pdf/2411.16508">paper</a> | <a href="https://mbzuai-oryx.github.io/ALM-Bench/">website</a>
-        </p>
-      </div>
+  <div class="paper-entry">
+    <img class="paper-thumb" src="resources/alm.png" alt="All Languages Matter">
+    <div>
+      <p><a href="https://arxiv.org/pdf/2411.16508"><strong>All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages</strong></a><br>
+      A Vayani, D Dissanayake, <u>Henok B Ademtew</u>, M Shah, S Khan, T Solorio, M Choudhury<br>
+      <b>CVPR 2025 (Highlight)</b> | <a href="https://mbzuai-oryx.github.io/ALM-Bench/">website</a></p>
+    </div>
+  </div>
 
-      <div class="paper-card"> 
-        <p>
-          <strong>CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark</strong><br>
-          D Romero, C Lyu,  ...,<u>Henok B Ademtew</u>, ..., R Mihalcea, T Solorio, A Fikri Aji<br>
-          <b>NeurIPS 2024 Datasets & Benchmarks (Oral)</b> | 
-          <a href="https://arxiv.org/abs/2406.05967">paper</a> | <a href="https://cvqa-benchmark.org/">website</a>
-        </p>
-      </div>
-      <div class="paper-card"> 
-        <p>
-          <strong>Many-Shot In-Context Learning: A Solution or Just an Enhancement for Low-Resource NLP?</strong><br>
-          <u>Henok B Ademtew</u>, Mikiyas Girma Birbo<br>
-          <b>Black in AI Workshop @NeurIPS 2024</b> | 
-          <a href="#">paper</a>
-        </p>
-      </div>
-      
-      <div class="paper-card"> 
-        <p>
-          <strong>AGE: Amharic, Ge’ez and English Parallel Dataset</strong><br>
-          <u>Henok B Ademtew</u>, Mikiyas Girma Birbo<br>
-          <b>LoResMT Workshop @ACL 2024</b> | 
-          <a href="https://aclanthology.org/2024.loresmt-1.14/">paper</a> | <a href="https://henokb.github.io/AGE-Dataset/">website</a> | <a href="https://huggingface.co/datasets/Henok/age_dataset">dataset</a>
-        </p>
-      </div>
-      </div>
+  <div class="paper-entry">
+    <img class="paper-thumb" src="resources/cvqa.png" alt="CVQA Benchmark">
+    <div>
+      <p><a href="https://arxiv.org/abs/2406.05967"><strong>CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark</strong></a><br>
+      D Romero, C Lyu, <u>Henok B Ademtew</u>, R Mihalcea, T Solorio, A Fikri Aji<br>
+      <b>NeurIPS 2024 Datasets & Benchmarks (Oral)</b> | <a href="https://cvqa-benchmark.org/">website</a></p>
+    </div>
+  </div>
+
+  <div class="paper-entry">
+    <img class="paper-thumb" src="resources/age.png" alt="AGE Dataset">
+    <div>
+      <p><a href="https://aclanthology.org/2024.loresmt-1.14/"><strong>AGE: Amharic, Ge’ez and English Parallel Dataset</strong></a><br>
+      <u>Henok B Ademtew</u>, Mikiyas Girma Birbo<br>
+      <b>LoResMT Workshop @ACL 2024</b> | <a href="https://henokb.github.io/AGE-Dataset/">website</a> | <a href="https://huggingface.co/datasets/Henok/age_dataset">dataset</a></p>
+    </div>
+  </div>
+</div>
+
 
       <hr>
       

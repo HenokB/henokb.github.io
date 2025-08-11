@@ -1,306 +1,401 @@
 <!doctype html>
-<html>
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="utf-8">
-  <title>Henok Ademtew</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Henok Ademtew </title>
+  <meta name="description" content="Henok Biadglign Ademtew — ML Research Engineer. Research in multilingual NLP, culturally-aware evaluation, and vision–language models." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/4e5ec95d7e.js" crossorigin="anonymous"></script>
+  <meta name="theme-color" content="#0b1020" id="metaThemeColor">
   <style>
-:root {
-  --bg: #000000;
-  --text: #e0e0e0;
-  --link: #4ea8de;
-  --card: #1c1c1c;
-}
+    /*
+      === Color system ===
+      Tidy, accessible palette with strong contrast and soft accents.
+      Switches via [data-theme="dark"|"light"] on <html> (persisted).
+    */
+    :root{
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0,0,0,.28);
 
-body.light {
-  --bg: #ffffff;
-  --text: #111111;
-  --link: #0366d6;
-  --card: #f5f5f5;
-}
+      /* Typography */
+      --font-sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--bg);
-  color: var(--text);
-  max-width: 960px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  line-height: 1.6;
-  transition: background 0.3s ease, color 0.3s ease;
-}
+      /* Light baseline */
+      --bg: #ffffff;
+      --panel: #ffffff;
+      --muted: #f1f5f9;  /* slate-100 */
+      --card: #f8fafc;   /* slate-50 */
+      --text: #0b1020;   /* near-black */
+      --text-dim: #334155; /* slate-700 */
+      --brand: #2563eb;   /* blue-600 */
+      --brand-2: #7c3aed; /* violet-600 */
+      --border: #e2e8f0;  /* slate-200 */
+      --link: #1d4ed8;    /* blue-700 */
+      --focus: #f59e0b;   /* amber-500 */
+    }
+    html[data-theme="dark"]{
+      --bg: #0b1020;        /* slate-950-ish */
+      --panel: #0f172a;     /* slate-900 */
+      --muted: #111827;     /* gray-900 */
+      --card: #0f1827;      /* custom card */
+      --text: #e5e7eb;      /* gray-200 */
+      --text-dim: #cbd5e1;  /* slate-300 */
+      --brand: #60a5fa;     /* blue-400 */
+      --brand-2: #a78bfa;   /* violet-400 */
+      --border: #243044;
+      --link: #93c5fd;      /* blue-300 */
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --focus: #fbbf24;     /* amber-400 */
+    }
 
-.container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  opacity: 0;
-  animation: fadeIn 1.5s ease-in-out forwards;
-}
+    /* Respect user OS preference on first load */
+    @media (prefers-color-scheme: dark){
+      html:not([data-theme]){ color-scheme: dark; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
 
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
+    html,body{height:100%}
+    body{margin:0; font-family: var(--font-sans); background:var(--bg); color:var(--text); line-height:1.65;}
 
-.left {
-  flex: 1;
-  min-width: 250px;
-  max-width: 300px;
-}
+    .shell{max-width:1080px; margin:0 auto; display:grid; grid-template-columns: 300px 1fr; gap:28px; padding:28px;}
+    @media (max-width: 900px){ .shell{grid-template-columns: 1fr; padding:18px; gap:18px} }
 
-.right {
-  flex: 2;
-  min-width: 300px;
-}
+    .sidebar{position:sticky; top:18px; align-self:start; background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow)}
+    .brand{display:flex; align-items:center; gap:14px;}
+    .avatar{width:64px; height:64px; border-radius:12px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); display:flex; align-items:center; justify-content:center; font-weight:800; color:white}
+    .name{font-weight:800; font-size:1.25rem}
+    .role{color:var(--text-dim); margin-top:2px}
 
-img.profile {
-  width: 35%;
-  border-radius: 10px;
-}
+    .nav{display:flex; flex-direction:column; gap:8px; margin:18px 0}
+    .nav a{display:flex; align-items:center; gap:10px; padding:10px 12px; color:var(--text); text-decoration:none; border:1px solid var(--border); border-radius:10px; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02));}
+    .nav a:hover{border-color:var(--brand); box-shadow:0 4px 14px rgba(59,130,246,.18)}
+    .nav a:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
 
-a {
-  color: var(--link);
-  text-decoration: none;
-}
+    .social{display:flex; gap:10px; margin-top:12px}
+    .social a{display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border:1px solid var(--border); border-radius:10px; color:var(--text); text-decoration:none}
+    .social a:hover{border-color:var(--brand)}
+    .social a:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
 
-a:hover {
-  text-decoration: underline;
-}
+    .content{display:flex; flex-direction:column; gap:22px}
 
-h1 {
-  margin-top: 0;
-  color: var(--text);
-}
+    .card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow)}
+    .section-title{display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 14px;}
+    .section-title h2{margin:0; font-size:1.05rem; letter-spacing:.3px}
 
-h2 {
-  border-left: 5px solid #4ea8de;
-  padding-left: 10px;
-  margin-bottom: 1rem;
-}
+    .hero h1{margin:.2rem 0 .6rem; font-size:clamp(1.6rem, 1.2rem + 1.8vw, 2.4rem); line-height:1.2}
+    .hero p{color:var(--text-dim); margin:.2rem 0}
+    .hero .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .tag{font-size:.8rem; padding:4px 8px; border-radius:999px; border:1px solid var(--border); background:linear-gradient(180deg, transparent, rgba(255,255,255,.02));}
 
-hr {
-  margin: 2rem 0;
-  border-color: #444;
-}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; text-decoration:none; border:1px solid var(--border); background:linear-gradient(180deg, transparent, rgba(255,255,255,.03)); color:var(--text)}
+    .btn:hover{border-color:var(--brand)}
+    .btn:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
 
-.social-links i {
-  transition: transform 0.3s ease;
-}
+    /* Publications */
+    .pub-controls{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px}
+    .search{flex:1; min-width:200px; display:flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--card)}
+    .search input{flex:1; border:none; outline:none; background:transparent; color:var(--text)}
+    .chips{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{font-size:.8rem; padding:6px 10px; border:1px solid var(--border); border-radius:999px; cursor:pointer; background:var(--card)}
+    .chip.active{border-color:var(--brand); color:var(--link)}
 
-.social-links i:hover {
-  transform: scale(1.4);
-}
+    .pub{display:grid; grid-template-columns: 120px 1fr; gap:14px; padding:14px; border:1px solid var(--border); border-radius:12px; background:var(--card); transition:transform .15s ease;}
+    .pub:hover{transform:translateY(-2px)}
+    .pub img{width:100%; height:100%; object-fit:cover; border-radius:8px; background:#0b1020}
+    .pub h3{margin:.2rem 0 .4rem; font-size:1rem}
+    .pub h3 a{color:var(--link); text-decoration:none}
+    .pub h3 a:hover{text-decoration:underline}
+    .pub .meta{font-size:.86rem; color:var(--text-dim)}
+    .pub .links{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+    .badge{display:inline-flex; align-items:center; gap:6px; font-size:.75rem; padding:4px 8px; border:1px solid var(--border); border-radius:8px; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02)); text-decoration:none; color:var(--text)}
+    .badge:hover{border-color:var(--brand)}
 
-.paper-card {
-  background: var(--card);
-  padding: 15px;
-  border-radius: 8px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  margin-bottom: 15px;
-}
+    @media (max-width:700px){ .pub{grid-template-columns: 1fr} }
 
-.paper-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
+    /* Blog cards */
+    .blog{display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));}
+    .blog .card{padding:16px}
+    .blog h4{margin:.4rem 0}
+    .blog h4 a{color:var(--link); text-decoration:none}
+    .blog h4 a:hover{text-decoration:underline}
+    .blog time{color:var(--text-dim); font-size:.85rem}
 
-.paper-entry {
-  display: flex;
-  align-items: stretch;
-  gap: 15px;
-  margin-bottom: 25px;
-  background: var(--card);
-  border-radius: 10px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  flex-direction: row;
-}
+    footer{opacity:.8; font-size:.9rem; padding:18px 0; text-align:center}
 
-.paper-entry:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
+    /* Floating theme toggle for better placement */
+    .theme-toggle{
+      position: fixed; right: 18px; bottom: 18px; z-index: 50;
+      display:inline-flex; align-items:center; gap:8px; padding:10px 12px;
+      border-radius:999px; border:1px solid var(--border); background:var(--panel);
+      box-shadow:var(--shadow); color:var(--text); cursor:pointer;
+    }
+    .theme-toggle:hover{ border-color: var(--brand); }
+    .theme-toggle:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
 
-.paper-thumb {
-  width: 160px;
-  height: auto;
-  object-fit: cover;
-}
-
-.paper-info {
-  padding: 10px 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.toggle-theme {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: var(--card);
-  border: 1px solid #444;
-  color: var(--text);
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  z-index: 10;
-}
-
-.toggle-theme:hover {
-  background: #333;
-}
-
-.name-hover {
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-
-/* Responsive Mobile Adjustments */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .left, .right {
-    max-width: 100%;
-  }
-
-  .paper-entry {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .paper-thumb {
-    width: 100%;
-    max-height: 200px;
-    object-fit: cover;
-  }
-}
-
+    /* Print-friendly CV export */
+    @media print{
+      .sidebar{position:static; box-shadow:none}
+      .btn,.social,.pub-controls,.theme-toggle{display:none}
+      body{background:#fff; color:#000}
+      .card{border-color:#ccc}
+    }
   </style>
 </head>
 <body>
-
-
-  <button class="toggle-theme" onclick="toggleTheme()" id="themeToggle">🌙</button>
-  
-
-
-  <div class="container">
-    <div class="left">
-      <img src="resources/henok.jpg" alt="Henok Ademtew" class="profile">
-
-      <div class="social-links">
-        <p><i class="fa-brands fa-google-scholar"></i> <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en">Scholar</a></p>
-        <p><i class="fab fa-github"></i> <a href="https://github.com/henokb">GitHub</a></p>
-        <p><i class="fab fa-twitter"></i> <a href="https://x.com/henokademtew">Twitter</a></p>
-        <p><i class="fa fa-envelope"></i> <a href="henokb2124@gmail.com">Email</a></p>
-
-
+  <div class="shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Profile sidebar">
+      <div class="brand">
+        <div class="avatar" aria-hidden="true">🏊‍♀️ </div>
+        <div>
+          <div class="name">Henok Biadglign Ademtew</div>
+        </div>
       </div>
-    </div>
 
-    <div class="right">
-      <h1>Henok Biadglign Ademtew</h1> 
+      <nav class="nav" aria-label="Sections">
+        <a href="#about"><i class="fa-regular fa-user"></i><span>About</span></a>
+        <a href="#publications"><i class="fa-regular fa-file-lines"></i><span>Publications</span></a>
+        <a href="#blog"><i class="fa-regular fa-newspaper"></i><span>Blog</span></a>
+      </nav>
 
-      
-      
-      <p>I’m an ML Engineer at Vella. I'm interested in working with VLMs, multilingual NLP, and deep learning methods.</p>
-       
-      <p>My research explores language models, culturally aware benchmarks, and probabilistic modeling. I've also worked on building models and tools for underrepresented languages.</p>
+      <div class="social" aria-label="Social links">
+        <!-- Font Awesome doesn't have google-scholar; use graduation-cap icon -->
+        <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en" title="Google Scholar" aria-label="Google Scholar" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-graduation-cap"></i></a>
+        <a href="https://github.com/henokb" title="GitHub" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+        <a href="https://x.com/henokademtew" title="X (Twitter)" aria-label="X" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
+        <a href="mailto:henokb2124@gmail.com" title="Email" aria-label="Email"><i class="fa-regular fa-envelope"></i></a>
+      </div>
 
-      <hr>
-      <h2>Papers</h2>
+      <!-- <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap">
+        <a class="btn" href="#" onclick="window.print()"><i class="fa-regular fa-file-pdf"></i>Export as PDF</a>
+      </div> -->
+    </aside>
 
-<div style="line-height: 1.8;">
-  <div class="paper-entry">
-    <img class="paper-thumb" src="resources/proverbeval.png" alt="ProverbEval">
-    <div>
-      <p><a href="https://arxiv.org/abs/2411.05049"><strong>ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding</strong></a><br>
-      I Azime, A Tonja, T Belay,..., <u>Henok B Ademtew</u>..., T Solorio, D Klakow<br>
-      <b>NAACL 2025</b></p>
-    </div>
+    <!-- Main content -->
+    <main class="content">
+      <section id="about" class="card hero">
+        <p>I work on multilingual NLP, vision and language models, and generally deep learning methods, with a focus on resource constrained environments.</p>
+        <div class="tags">
+          <span class="tag">Multilingual NLP</span>
+          <span class="tag">VLMs</span>
+          <span class="tag">Deep Learning</span>
+        </div>
+      </section>
+
+      <section id="publications" class="card">
+        <div class="section-title">
+          <h2>Selected Publications</h2>
+          <div class="chips" role="tablist" aria-label="Filter by domain">
+            <button class="chip active" data-venue="all" role="tab">All</button>
+            <button class="chip" data-venue="vlm" role="tab">VLM</button>
+            <button class="chip" data-venue="nlp" role="tab">NLP</button>
+          </div>
+        </div>
+
+        <div class="pub-controls">
+          <label class="search" aria-label="Search publications">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input id="pubSearch" type="search" placeholder="Search title, author, keyword…" autocomplete="off" />
+          </label>
+        </div>
+
+        <div id="pubList" class="stack" style="display:grid; gap:12px">
+          <!-- Normalization -->
+          <article class="pub" data-venue="nlp" data-keywords="A Case Against Implicit Standards: Homophone Normalization in Machine Translation for Languages that use the Ge'ez Script">
+            <img src="resources/normalization.png" alt="thumbnail" />
+            <div>
+              <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">A Case Against Implicit Standards: Homophone Normalization in Machine Translation for Languages that use the Ge'ez Script </a></h3>
+              <div class="links">
+                <span class="badge">Preprint, 2025</span>
+              </div>
+            </div>
+          </article>
+           <!-- Cammt -->
+           <article class="pub" data-venue="vlm" data-keywords="CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation">
+            <img src="resources/cammt.png"  />
+            <div>
+              <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation </a></h3>
+              <div class="links">
+                <span class="badge">Preprint, 2025</span>
+              </div>
+            </div>
+          </article>
+          <!-- ALM -->
+          <article class="pub" data-venue="vlm" data-keywords="ALM ALM-Bench culturally diverse 100 languages LMMs CVPR 2025">
+            <img src="resources/alm.png" alt="All Languages Matter paper thumbnail" />
+            <div>
+              <h3><a href="https://arxiv.org/pdf/2411.16508" target="_blank" rel="noopener noreferrer">All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages</a></h3>
+              <div class="links">
+                <span class="badge">CVPR 2025</span>
+                <a class="badge" href="https://mbzuai-oryx.github.io/ALM-Bench/" target="_blank" rel="noopener noreferrer">Project page</a>
+              </div>
+            </div>
+          </article>
+          <!-- ProverbEval -->
+          <article class="pub" data-venue="nlp" data-keywords="ProverbEval LLM evaluation low-resource NAACL 2025 proverb">
+            <img src="resources/proverbeval.png" alt="ProverbEval paper thumbnail" />
+            <div>
+              <h3><a href="https://arxiv.org/abs/2411.05049" target="_blank" rel="noopener noreferrer">ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding</a></h3>
+              <div class="links">
+                <span class="badge"> NAACL 2025</span>
+                <a class="badge" href="https://github.com/EthioNLP/EthioProverbEval" target="_blank" rel="noopener noreferrer">GitHub</a>
+
+                
+              </div>
+            </div>
+          </article>
+          <!-- CVQA -->
+          <article class="pub" data-venue="vlm" data-keywords="CVQA culturally-diverse multilingual VQA NeurIPS 2024 dataset">
+            <img src="resources/cvqa.png" alt="CVQA benchmark thumbnail" />
+            <div>
+              <h3><a href="https://arxiv.org/abs/2406.05967" target="_blank" rel="noopener noreferrer">CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark</a></h3>
+              <div class="links">
+                <span class="badge"> Neurips D&B 2024</span>
+                <a class="badge" href="https://cvqa-benchmark.org/" target="_blank" rel="noopener noreferrer">Project page</a>
+              </div>
+            </div>
+          </article>
+          <!-- AGE -->
+          <article class="pub" data-venue="nlp" data-keywords="AGE Amharic Ge’ez English parallel dataset ACL 2024 LoResMT Henok">
+            <img src="resources/age.png" alt="AGE dataset thumbnail" />
+            <div>
+              <h3><a href="https://aclanthology.org/2024.loresmt-1.14/" target="_blank" rel="noopener noreferrer">AGE: Amharic, Ge’ez and English Parallel Dataset</a></h3>
+              <div class="links">
+                <span class="badge"> LoResMT, ACL 2024</span>
+                <a class="badge" href="https://henokb.github.io/AGE-Dataset/" target="_blank" rel="noopener noreferrer">Project page</a>
+                <a class="badge" href="https://huggingface.co/datasets/Henok/age_dataset" target="_blank" rel="noopener noreferrer">Dataset</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="blog" class="card">
+        <div class="section-title"><h2>Blog</h2></div>
+        <div class="blog">
+          <article class="card">
+            <h4><a href="https://medium.com/codex/is-testing-a-life-or-death-situation-89846fa92ce9" target="_blank" rel="noopener noreferrer">Is software testing a life-or-death situation?</a></h4>
+          </article>
+          <article class="card">
+            <h4><a href="https://henok.hashnode.dev/mergify-smooth-code-merging" target="_blank" rel="noopener noreferrer">Mergify: Smooth Code Merging</a></h4>
+          </article>
+        </div>
+      </section>
+
+
+
+      <footer>
+        © <span id="year"></span> 
+      </footer>
+    </main>
   </div>
 
-  <div class="paper-entry">
-    <img class="paper-thumb" src="resources/alm.png" alt="All Languages Matter">
-    <div>
-      <p><a href="https://arxiv.org/pdf/2411.16508"><strong>All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages</strong></a><br>
-      A Vayani, D Dissanayake, ...,<u>Henok B Ademtew</u> ..., M Shah, S Khan, T Solorio, M Choudhury<br>
-      <b>CVPR 2025 (Highlight)</b> | <a href="https://mbzuai-oryx.github.io/ALM-Bench/">website</a></p>
-    </div>
-  </div>
+  <!-- BibTeX payloads -->
+  <template id="bib-alm">@inproceedings{Vayani2025ALM,
+  title={All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages},
+  booktitle={CVPR},
+  year={2025},
+  author={Vayani, A. and Dissanayake, D. and ... and Ademtew, Henok B. and ... and Choudhury, M.}
+}</template>
+  <template id="bib-proverb">@inproceedings{Azime2025ProverbEval,
+  title={ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding},
+  booktitle={NAACL},
+  year={2025},
+  author={Azime, I. and Tonja, A. and Belay, T. and ... and Ademtew, Henok B. and Solorio, T. and Klakow, D.}
+}</template>
+  <template id="bib-cvqa">@inproceedings{Romero2024CVQA,
+  title={CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark},
+  booktitle={NeurIPS Datasets and Benchmarks},
+  year={2024},
+  author={Romero, D. and Lyu, C. and ... and Ademtew, Henok B. and Mihalcea, R. and Solorio, T. and Aji, A. F.}
+}</template>
+  <template id="bib-age">@inproceedings{Ademtew2024AGE,
+  title={AGE: Amharic, Ge’ez and English Parallel Dataset},
+  booktitle={ACL Workshop on Low-Resource Machine Translation},
+  year={2024},
+  author={Ademtew, Henok B. and Birbo, Mikiyas G.}
+}</template>
 
-  <div class="paper-entry">
-    <img class="paper-thumb" src="resources/cvqa.png" alt="CVQA Benchmark">
-    <div>
-      <p><a href="https://arxiv.org/abs/2406.05967"><strong>CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark</strong></a><br>
-      D Romero, C Lyu, ...,<u>Henok B Ademtew</u> ..., R Mihalcea, T Solorio, A Fikri Aji<br>
-      <b>NeurIPS 2024 Datasets & Benchmarks (Oral)</b> | <a href="https://cvqa-benchmark.org/">website</a></p>
-    </div>
-  </div>
+  <!-- Structured data (Person) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Henok Biadglign Ademtew",
+    "jobTitle": "ML Research Engineer",
+    "affiliation": {"@type": "Organization", "name": "Vella"},
+    "url": "https://henokb.github.io",
+    "sameAs": [
+      "https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en",
+      "https://github.com/henokb",
+      "https://x.com/henokademtew"
+    ]
+  }
+  </script>
 
-  <div class="paper-entry">
-    <img class="paper-thumb" src="resources/age.png" alt="AGE Dataset">
-    <div>
-      <p><a href="https://aclanthology.org/2024.loresmt-1.14/"><strong>AGE: Amharic, Ge’ez and English Parallel Dataset</strong></a><br>
-      <u>Henok B Ademtew</u>, Mikiyas Girma Birbo<br>
-      <b>LoResMT Workshop @ACL 2024</b> | <a href="https://henokb.github.io/AGE-Dataset/">website</a> | <a href="https://huggingface.co/datasets/Henok/age_dataset">dataset</a></p>
-    </div>
-  </div>
-</div>
-
-<h2>Blogs</h2>
-<div style="line-height: 1.8;">
-  <div class="paper-card">
-    <p>
-      <a href="https://medium.com/codex/is-testing-a-life-or-death-situation-89846fa92ce9"><strong>Is software testing a life-or-death situation?
-      </strong></a><br>
-      <small>Sept, 2022</small>
-    </p>
-  </div>
-
-  <div class="paper-card">
-    <p>
-      <a href="https://henok.hashnode.dev/mergify-smooth-code-merging"><strong>Mergify : smooth code merging </strong></a><br>
-      <small>Posted: Sept, 2022</small>
-    </p>
-  </div>
-</div>
-
-
-      <hr>
-      
-      
-    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" 
-        style="position: fixed; bottom: 20px; right: 20px; padding:8px 12px; background:var(--card); border:none; border-radius:8px; cursor:pointer;">
-        ⬆️
-</button>
-
-  </div>
-
-
+  <button class="theme-toggle" id="toggleTheme" type="button" aria-label="Toggle theme" title="Toggle theme">
+    <i class="fa-regular fa-moon"></i>
+    <span>Theme</span>
+  </button>
 
   <script>
-    function toggleTheme() {
-      const isLight = document.body.classList.toggle('light');
-      document.getElementById('themeToggle').innerText = isLight ? '☀️' : '🌙';
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // --- Theme toggle (persisted) ---
+    const metaTheme = document.getElementById('metaThemeColor');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const saved = localStorage.getItem('theme');
+    const html = document.documentElement;
+
+    function applyTheme(mode){
+      html.setAttribute('data-theme', mode);
+      metaTheme.setAttribute('content', mode === 'light' ? '#ffffff' : '#0b1020');
+      // Improve color-scheme hint for form controls
+      html.style.colorScheme = mode;
     }
 
-    window.onload = () => {
-      if (localStorage.getItem('theme') === 'light') {
-        document.body.classList.add('light');
-        document.getElementById('themeToggle').innerText = '☀️';
-      }
+    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+
+    document.getElementById('toggleTheme').addEventListener('click', () => {
+      const current = html.getAttribute('data-theme') || (prefersDark ? 'dark' : 'light');
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    });
+
+    // --- Publications search + filter ---
+    const pubSearch = document.getElementById('pubSearch');
+    const pubList = document.getElementById('pubList');
+    const chips = document.querySelectorAll('.chip');
+    let currentVenue = 'all';
+    const filterPubs = () => {
+      const q = (pubSearch.value || '').toLowerCase();
+      [...pubList.children].forEach(el => {
+        const venueOk = currentVenue==='all' || el.dataset.venue===currentVenue;
+        const text = (el.textContent || '').toLowerCase() + ' ' + (el.dataset.keywords || '').toLowerCase();
+        const textOk = !q || text.includes(q);
+        el.style.display = (venueOk && textOk) ? '' : 'none';
+      });
     };
+    pubSearch?.addEventListener('input', filterPubs);
+    chips.forEach(c => c.addEventListener('click', () => { chips.forEach(x=>x.classList.remove('active')); c.classList.add('active'); currentVenue = c.dataset.venue; filterPubs(); }));
 
+    // --- Copy BibTeX ---
+    document.querySelectorAll('[data-bib]').forEach(btn => btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-bib');
+      const tpl = document.getElementById('bib-' + id);
+      if(!tpl) return;
+      const text = tpl.textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        const old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(()=> btn.textContent = old, 1200);
+      });
+    }));
   </script>
-  
-
 </body>
 </html>

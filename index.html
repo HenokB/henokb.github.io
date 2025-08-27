@@ -3,189 +3,153 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Henok Ademtew </title>
-  <meta name="description" content="Henok Biadglign Ademtew — ML Research Engineer. Research in multilingual NLP, culturally-aware evaluation, and vision–language models." />
+  <title>Henok Ademtew</title>
+  <meta name="description" content="Henok Biadglign Ademtew — ML Research Engineer. Research in NLP, culturally-aware evaluation, and vision–language models." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/4e5ec95d7e.js" crossorigin="anonymous"></script>
   <meta name="theme-color" content="#0b1020" id="metaThemeColor">
   <style>
-    /*
-      === Color system ===
-      Tidy, accessible palette with strong contrast and soft accents.
-      Switches via [data-theme="dark"|"light"] on <html> (persisted).
-    */
     :root{
       --radius: 14px;
       --shadow: 0 10px 30px rgba(0,0,0,.28);
-
-      /* Typography */
       --font-sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-
-      /* Light baseline */
-      --bg: #ffffff;
-      --panel: #ffffff;
-      --muted: #f1f5f9;  /* slate-100 */
-      --card: #f8fafc;   /* slate-50 */
-      --text: #0b1020;   /* near-black */
-      --text-dim: #334155; /* slate-700 */
-      --brand: #2563eb;   /* blue-600 */
-      --brand-2: #7c3aed; /* violet-600 */
-      --border: #e2e8f0;  /* slate-200 */
-      --link: #1d4ed8;    /* blue-700 */
-      --focus: #f59e0b;   /* amber-500 */
+      --bg: #ffffff; --panel:#ffffff; --muted:#f1f5f9; --card:#f8fafc; --text:#0b1020; --text-dim:#334155;
+      --brand:#2563eb; --brand-2:#7c3aed; --border:#e2e8f0; --link:#1d4ed8; --focus:#f59e0b;
+      --gap: 28px;
     }
     html[data-theme="dark"]{
-      --bg: #0b1020;        /* slate-950-ish */
-      --panel: #0f172a;     /* slate-900 */
-      --muted: #111827;     /* gray-900 */
-      --card: #0f1827;      /* custom card */
-      --text: #e5e7eb;      /* gray-200 */
-      --text-dim: #cbd5e1;  /* slate-300 */
-      --brand: #60a5fa;     /* blue-400 */
-      --brand-2: #a78bfa;   /* violet-400 */
-      --border: #243044;
-      --link: #93c5fd;      /* blue-300 */
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --focus: #fbbf24;     /* amber-400 */
-    }
-
-    /* Respect user OS preference on first load */
-    @media (prefers-color-scheme: dark){
-      html:not([data-theme]){ color-scheme: dark; }
+      --bg:#0b1020; --panel:#0f172a; --muted:#111827; --card:#0f1827; --text:#e5e7eb; --text-dim:#cbd5e1;
+      --brand:#60a5fa; --brand-2:#a78bfa; --border:#243044; --link:#93c5fd; --shadow:0 10px 30px rgba(0,0,0,.35);
     }
     @media (prefers-reduced-motion: reduce){
-      *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+      *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
     }
-
-    html,body{height:100%}
-    body{margin:0; font-family: var(--font-sans); background:var(--bg); color:var(--text); line-height:1.65;}
-
-    .shell{max-width:1080px; margin:0 auto; display:grid; grid-template-columns: 300px 1fr; gap:28px; padding:28px;}
-    @media (max-width: 900px){ .shell{grid-template-columns: 1fr; padding:18px; gap:18px} }
-
+    body{margin:0; font-family:var(--font-sans); background:var(--bg); color:var(--text); line-height:1.65;}
+    .shell{max-width:1080px; margin:0 auto; display:grid; grid-template-columns: 300px 1fr; gap:var(--gap); padding:var(--gap);}
+    @media (max-width: 960px){
+      :root{ --gap:18px; }
+      .shell{grid-template-columns: 1fr; padding:var(--gap);}
+    }
     .sidebar{position:sticky; top:18px; align-self:start; background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow)}
+    @media (max-width: 960px){ .sidebar{ position:static; } }
     .brand{display:flex; align-items:center; gap:14px;}
     .avatar{width:64px; height:64px; border-radius:12px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); display:flex; align-items:center; justify-content:center; font-weight:800; color:white}
-    .name{font-weight:800; font-size:1.25rem}
-    .role{color:var(--text-dim); margin-top:2px}
-
-    .nav{display:flex; flex-direction:column; gap:8px; margin:18px 0}
-    .nav a{display:flex; align-items:center; gap:10px; padding:10px 12px; color:var(--text); text-decoration:none; border:1px solid var(--border); border-radius:10px; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02));}
+    .name{font-weight:800; font-size:clamp(1.1rem, 1rem + .8vw, 1.4rem)}
+    .nav{display:flex; flex-direction:column; gap:10px; margin:18px 0}
+    .nav a{display:flex; align-items:center; gap:10px; padding:12px 14px; color:var(--text); text-decoration:none; border:1px solid var(--border); border-radius:12px; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02)); touch-action:manipulation}
     .nav a:hover{border-color:var(--brand); box-shadow:0 4px 14px rgba(59,130,246,.18)}
     .nav a:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
-
-    .social{display:flex; gap:10px; margin-top:12px}
-    .social a{display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border:1px solid var(--border); border-radius:10px; color:var(--text); text-decoration:none}
-    .social a:hover{border-color:var(--brand)}
-    .social a:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
-
+    .social{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
+    .social a{display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border:1px solid var(--border); border-radius:12px; color:var(--text); text-decoration:none}
     .content{display:flex; flex-direction:column; gap:22px}
-
     .card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow)}
     .section-title{display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 14px;}
     .section-title h2{margin:0; font-size:1.05rem; letter-spacing:.3px}
-
     .hero h1{margin:.2rem 0 .6rem; font-size:clamp(1.6rem, 1.2rem + 1.8vw, 2.4rem); line-height:1.2}
     .hero p{color:var(--text-dim); margin:.2rem 0}
     .hero .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
-    .tag{font-size:.8rem; padding:4px 8px; border-radius:999px; border:1px solid var(--border); background:linear-gradient(180deg, transparent, rgba(255,255,255,.02));}
-
-    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; text-decoration:none; border:1px solid var(--border); background:linear-gradient(180deg, transparent, rgba(255,255,255,.03)); color:var(--text)}
+    .tag{font-size:.85rem; padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:linear-gradient(180deg, transparent, rgba(255,255,255,.02));}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:12px 14px; border-radius:12px; text-decoration:none; border:1px solid var(--border); background:linear-gradient(180deg, transparent, rgba(255,255,255,.03)); color:var(--text)}
     .btn:hover{border-color:var(--brand)}
-    .btn:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
-
-    /* Publications */
     .pub-controls{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px}
-    .search{flex:1; min-width:200px; display:flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--card)}
-    .search input{flex:1; border:none; outline:none; background:transparent; color:var(--text)}
+    .search{flex:1; min-width:220px; display:flex; align-items:center; gap:8px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:var(--card)}
+    .search input{flex:1; border:none; outline:none; background:transparent; color:var(--text); font-size:1rem}
     .chips{display:flex; gap:8px; flex-wrap:wrap}
-    .chip{font-size:.8rem; padding:6px 10px; border:1px solid var(--border); border-radius:999px; cursor:pointer; background:var(--card)}
+    .chip{font-size:.85rem; padding:8px 12px; border:1px solid var(--border); border-radius:999px; cursor:pointer; background:var(--card)}
     .chip.active{border-color:var(--brand); color:var(--link)}
-
     .pub{display:grid; grid-template-columns: 120px 1fr; gap:14px; padding:14px; border:1px solid var(--border); border-radius:12px; background:var(--card); transition:transform .15s ease;}
     .pub:hover{transform:translateY(-2px)}
     .pub img{width:100%; height:100%; object-fit:cover; border-radius:8px; background:#0b1020}
     .pub h3{margin:.2rem 0 .4rem; font-size:1rem}
     .pub h3 a{color:var(--link); text-decoration:none}
     .pub h3 a:hover{text-decoration:underline}
-    .pub .meta{font-size:.86rem; color:var(--text-dim)}
     .pub .links{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
-    .badge{display:inline-flex; align-items:center; gap:6px; font-size:.75rem; padding:4px 8px; border:1px solid var(--border); border-radius:8px; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02)); text-decoration:none; color:var(--text)}
-    .badge:hover{border-color:var(--brand)}
-
+    .badge{display:inline-flex; align-items:center; gap:6px; font-size:.8rem; padding:6px 10px; border:1px solid var(--border); border-radius:8px; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02)); text-decoration:none; color:var(--text)}
     @media (max-width:700px){ .pub{grid-template-columns: 1fr} }
-
-    /* Blog cards */
     .blog{display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));}
     .blog .card{padding:16px}
     .blog h4{margin:.4rem 0}
     .blog h4 a{color:var(--link); text-decoration:none}
     .blog h4 a:hover{text-decoration:underline}
-    .blog time{color:var(--text-dim); font-size:.85rem}
-
     footer{opacity:.8; font-size:.9rem; padding:18px 0; text-align:center}
-
-    /* Floating theme toggle for better placement */
-    .theme-toggle{
-      position: fixed; right: 18px; bottom: 18px; z-index: 50;
-      display:inline-flex; align-items:center; gap:8px; padding:10px 12px;
-      border-radius:999px; border:1px solid var(--border); background:var(--panel);
-      box-shadow:var(--shadow); color:var(--text); cursor:pointer;
-    }
+    .theme-toggle{position: fixed; right: 18px; bottom: 18px; z-index: 50; display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:999px; border:1px solid var(--border); background:var(--panel); box-shadow:var(--shadow); color:var(--text); cursor:pointer;}
     .theme-toggle:hover{ border-color: var(--brand); }
-    .theme-toggle:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
-
-    /* Print-friendly CV export */
-    @media print{
-      .sidebar{position:static; box-shadow:none}
-      .btn,.social,.pub-controls,.theme-toggle{display:none}
-      body{background:#fff; color:#000}
-      .card{border-color:#ccc}
-    }
+    @media (max-width: 480px){ .theme-toggle{ right: 12px; bottom: 12px; padding:8px 10px; } }
+    @media print{ .sidebar{position:static; box-shadow:none} .btn,.social,.pub-controls,.theme-toggle{display:none} body{background:#fff; color:#000} .card{border-color:#ccc} }
   </style>
 </head>
 <body>
   <div class="shell">
-    <!-- Sidebar -->
     <aside class="sidebar" aria-label="Profile sidebar">
       <div class="brand">
-        <div class="avatar" aria-hidden="true">🏊‍♀️ </div>
-        <div>
-          <div class="name">Henok Biadglign Ademtew</div>
-        </div>
+        <div class="avatar" aria-hidden="true">🏊‍♀️</div>
+        <div class="name">Henok Biadglign Ademtew</div>
       </div>
 
       <nav class="nav" aria-label="Sections">
         <a href="#about"><i class="fa-regular fa-user"></i><span>About</span></a>
+        <a href="#news"><i class="fa-regular fa-bell"></i><span>News</span></a>
         <a href="#publications"><i class="fa-regular fa-file-lines"></i><span>Publications</span></a>
         <a href="#blog"><i class="fa-regular fa-newspaper"></i><span>Blog</span></a>
       </nav>
 
       <div class="social" aria-label="Social links">
-        <!-- Font Awesome doesn't have google-scholar; use graduation-cap icon -->
-        <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en" title="Google Scholar" aria-label="Google Scholar" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-graduation-cap"></i></a>
-        <a href="https://github.com/henokb" title="GitHub" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
-        <a href="https://x.com/henokademtew" title="X (Twitter)" aria-label="X" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
-        <a href="mailto:henokb2124@gmail.com" title="Email" aria-label="Email"><i class="fa-regular fa-envelope"></i></a>
+        <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en" title="Google Scholar" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i></a>
+        <a href="https://github.com/henokb" title="GitHub" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i></a>
+        <a href="https://x.com/henokademtew" title="X (Twitter)" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter" aria-hidden="true"></i></a>
+        <a href="mailto:henokb2124@gmail.com" title="Email"><i class="fa-regular fa-envelope" aria-hidden="true"></i></a>
       </div>
-
-      <!-- <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap">
-        <a class="btn" href="#" onclick="window.print()"><i class="fa-regular fa-file-pdf"></i>Export as PDF</a>
-      </div> -->
     </aside>
 
-    <!-- Main content -->
     <main class="content">
       <section id="about" class="card hero">
-        <p>I work on multilingual NLP, vision and language models, and generally deep learning methods, with a focus on resource constrained environments.</p>
+        <h1 class="sr-only" style="position:absolute;left:-9999px;">About</h1>
+        <p>I work on NLP, vision and language models, and generally deep learning methods, with a focus on resource constrained environments.</p>
         <div class="tags">
-          <span class="tag">Multilingual NLP</span>
+          <span class="tag">NLP</span>
           <span class="tag">VLMs</span>
           <span class="tag">Deep Learning</span>
         </div>
       </section>
+
+      <!-- NEW: simple News section (before publications) -->
+      <section id="news" class="card" aria-labelledby="news-title">
+        <div class="section-title">
+          <h2 id="news-title">News</h2>
+        </div>
+        <ul style="margin:0; padding-left:18px; line-height:1.7">
+          <li>
+            <strong>Aug 2025:</strong> Won 2nd place in 
+            
+              InstaDeep's Hackathon at Deep Learning Indaba
+            
+          </li>
+          <li>
+            <strong>Aug 2025:</strong> 2 papers accepted to EMNLP: 
+            <a href="https://arxiv.org/pdf/2507.15142?" target="_blank" rel="noopener noreferrer">
+              Ge’ez Homophone Normalization
+            </a> and 
+            <a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">
+              CAMMT
+            </a>
+          </li>
+          <li>
+            <strong>Jul 2025:</strong> Served as a TA for 
+            <a href="https://www.acvss.ai/" target="_blank" rel="noopener noreferrer">
+              African Computer Vision Summer School
+            </a>
+          </li>
+          <li>
+            <strong>May 2025:</strong> 
+            <a href="https://mbzuai-oryx.github.io/ALM-Bench/" target="_blank" rel="noopener noreferrer">
+              ALM Bench
+            </a> accepted to CVPR
+          </li>
+        </ul>
+      </section>
+      
 
       <section id="publications" class="card">
         <div class="section-title">
@@ -205,29 +169,24 @@
         </div>
 
         <div id="pubList" class="stack" style="display:grid; gap:12px">
-          <!-- Normalization -->
           <article class="pub" data-venue="nlp" data-keywords="A Case Against Implicit Standards: Homophone Normalization in Machine Translation for Languages that use the Ge'ez Script">
-            <img src="resources/normalization.png" alt="thumbnail" />
+            <img src="resources/normalization.png" loading="lazy" alt="Homophone normalization thumbnail" />
             <div>
-              <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">A Case Against Implicit Standards: Homophone Normalization in Machine Translation for Languages that use the Ge'ez Script </a></h3>
-              <div class="links">
-                <span class="badge">Preprint, 2025</span>
-              </div>
+              <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">A Case Against Implicit Standards: Homophone Normalization in Machine Translation for Languages that use the Ge'ez Script</a></h3>
+              <div class="links"><span class="badge">EMNLP Main 2025</span></div>
             </div>
           </article>
-           <!-- Cammt -->
-           <article class="pub" data-venue="vlm" data-keywords="CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation">
-            <img src="resources/cammt.png"  />
+
+          <article class="pub" data-venue="vlm" data-keywords="CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation">
+            <img src="resources/cammt.png" loading="lazy" alt="CAMMT thumbnail" />
             <div>
-              <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation </a></h3>
-              <div class="links">
-                <span class="badge">Preprint, 2025</span>
-              </div>
+              <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation</a></h3>
+              <div class="links"><span class="badge">EMNLP Findings 2025</span></div>
             </div>
           </article>
-          <!-- ALM -->
+
           <article class="pub" data-venue="vlm" data-keywords="ALM ALM-Bench culturally diverse 100 languages LMMs CVPR 2025">
-            <img src="resources/alm.png" alt="All Languages Matter paper thumbnail" />
+            <img src="resources/alm.png" loading="lazy" alt="All Languages Matter paper thumbnail" />
             <div>
               <h3><a href="https://arxiv.org/pdf/2411.16508" target="_blank" rel="noopener noreferrer">All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages</a></h3>
               <div class="links">
@@ -236,37 +195,35 @@
               </div>
             </div>
           </article>
-          <!-- ProverbEval -->
+
           <article class="pub" data-venue="nlp" data-keywords="ProverbEval LLM evaluation low-resource NAACL 2025 proverb">
-            <img src="resources/proverbeval.png" alt="ProverbEval paper thumbnail" />
+            <img src="resources/proverbeval.png" loading="lazy" alt="ProverbEval thumbnail" />
             <div>
               <h3><a href="https://arxiv.org/abs/2411.05049" target="_blank" rel="noopener noreferrer">ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding</a></h3>
               <div class="links">
-                <span class="badge"> NAACL 2025</span>
+                <span class="badge">NAACL 2025</span>
                 <a class="badge" href="https://github.com/EthioNLP/EthioProverbEval" target="_blank" rel="noopener noreferrer">GitHub</a>
-
-                
               </div>
             </div>
           </article>
-          <!-- CVQA -->
+
           <article class="pub" data-venue="vlm" data-keywords="CVQA culturally-diverse multilingual VQA NeurIPS 2024 dataset">
-            <img src="resources/cvqa.png" alt="CVQA benchmark thumbnail" />
+            <img src="resources/cvqa.png" loading="lazy" alt="CVQA benchmark thumbnail" />
             <div>
               <h3><a href="https://arxiv.org/abs/2406.05967" target="_blank" rel="noopener noreferrer">CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark</a></h3>
               <div class="links">
-                <span class="badge"> Neurips D&B 2024</span>
+                <span class="badge">NeurIPS D&B 2024</span>
                 <a class="badge" href="https://cvqa-benchmark.org/" target="_blank" rel="noopener noreferrer">Project page</a>
               </div>
             </div>
           </article>
-          <!-- AGE -->
+
           <article class="pub" data-venue="nlp" data-keywords="AGE Amharic Ge’ez English parallel dataset ACL 2024 LoResMT Henok">
-            <img src="resources/age.png" alt="AGE dataset thumbnail" />
+            <img src="resources/age.png" loading="lazy" alt="AGE dataset thumbnail" />
             <div>
               <h3><a href="https://aclanthology.org/2024.loresmt-1.14/" target="_blank" rel="noopener noreferrer">AGE: Amharic, Ge’ez and English Parallel Dataset</a></h3>
               <div class="links">
-                <span class="badge"> LoResMT, ACL 2024</span>
+                <span class="badge">LoResMT, ACL 2024</span>
                 <a class="badge" href="https://henokb.github.io/AGE-Dataset/" target="_blank" rel="noopener noreferrer">Project page</a>
                 <a class="badge" href="https://huggingface.co/datasets/Henok/age_dataset" target="_blank" rel="noopener noreferrer">Dataset</a>
               </div>
@@ -287,114 +244,53 @@
         </div>
       </section>
 
-
-
-      <footer>
-        © <span id="year"></span> 
-      </footer>
+      <footer>© <span id="year"></span></footer>
     </main>
   </div>
 
-  <!-- BibTeX payloads -->
-  <template id="bib-alm">@inproceedings{Vayani2025ALM,
-  title={All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages},
-  booktitle={CVPR},
-  year={2025},
-  author={Vayani, A. and Dissanayake, D. and ... and Ademtew, Henok B. and ... and Choudhury, M.}
-}</template>
-  <template id="bib-proverb">@inproceedings{Azime2025ProverbEval,
-  title={ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding},
-  booktitle={NAACL},
-  year={2025},
-  author={Azime, I. and Tonja, A. and Belay, T. and ... and Ademtew, Henok B. and Solorio, T. and Klakow, D.}
-}</template>
-  <template id="bib-cvqa">@inproceedings{Romero2024CVQA,
-  title={CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark},
-  booktitle={NeurIPS Datasets and Benchmarks},
-  year={2024},
-  author={Romero, D. and Lyu, C. and ... and Ademtew, Henok B. and Mihalcea, R. and Solorio, T. and Aji, A. F.}
-}</template>
-  <template id="bib-age">@inproceedings{Ademtew2024AGE,
-  title={AGE: Amharic, Ge’ez and English Parallel Dataset},
-  booktitle={ACL Workshop on Low-Resource Machine Translation},
-  year={2024},
-  author={Ademtew, Henok B. and Birbo, Mikiyas G.}
-}</template>
-
-  <!-- Structured data (Person) -->
+  <!-- Schema + Toggle -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Henok Biadglign Ademtew",
-    "jobTitle": "ML Research Engineer",
-    "affiliation": {"@type": "Organization", "name": "Vella"},
-    "url": "https://henokb.github.io",
-    "sameAs": [
-      "https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en",
-      "https://github.com/henokb",
-      "https://x.com/henokademtew"
-    ]
-  }
+  {"@context":"https://schema.org","@type":"Person","name":"Henok Biadglign Ademtew","jobTitle":"ML Research Engineer","affiliation":{"@type":"Organization","name":"Vella"},"url":"https://henokb.github.io","sameAs":["https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en","https://github.com/henokb","https://x.com/henokademtew"]}
   </script>
 
   <button class="theme-toggle" id="toggleTheme" type="button" aria-label="Toggle theme" title="Toggle theme">
-    <i class="fa-regular fa-moon"></i>
-    <span>Theme</span>
+    <i class="fa-regular fa-moon"></i><span>Theme</span>
   </button>
 
   <script>
-    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // --- Theme toggle (persisted) ---
     const metaTheme = document.getElementById('metaThemeColor');
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const saved = localStorage.getItem('theme');
     const html = document.documentElement;
-
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia?.matches && window.matchMedia('(prefers-color-scheme: dark)').matches;
     function applyTheme(mode){
       html.setAttribute('data-theme', mode);
-      metaTheme.setAttribute('content', mode === 'light' ? '#ffffff' : '#0b1020');
-      // Improve color-scheme hint for form controls
       html.style.colorScheme = mode;
+      metaTheme.setAttribute('content', mode === 'light' ? '#ffffff' : '#0b1020');
     }
-
     applyTheme(saved || (prefersDark ? 'dark' : 'light'));
-
     document.getElementById('toggleTheme').addEventListener('click', () => {
-      const current = html.getAttribute('data-theme') || (prefersDark ? 'dark' : 'light');
-      const next = current === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('theme', next);
-      applyTheme(next);
+      const next = (html.getAttribute('data-theme') === 'dark') ? 'light' : 'dark';
+      localStorage.setItem('theme', next); applyTheme(next);
     });
 
-    // --- Publications search + filter ---
+    // pubs filter
     const pubSearch = document.getElementById('pubSearch');
     const pubList = document.getElementById('pubList');
     const chips = document.querySelectorAll('.chip');
     let currentVenue = 'all';
     const filterPubs = () => {
-      const q = (pubSearch.value || '').toLowerCase();
+      const q = (pubSearch?.value || '').toLowerCase();
       [...pubList.children].forEach(el => {
         const venueOk = currentVenue==='all' || el.dataset.venue===currentVenue;
         const text = (el.textContent || '').toLowerCase() + ' ' + (el.dataset.keywords || '').toLowerCase();
-        const textOk = !q || text.includes(q);
-        el.style.display = (venueOk && textOk) ? '' : 'none';
+        el.style.display = (venueOk && (!q || text.includes(q))) ? '' : 'none';
       });
     };
     pubSearch?.addEventListener('input', filterPubs);
-    chips.forEach(c => c.addEventListener('click', () => { chips.forEach(x=>x.classList.remove('active')); c.classList.add('active'); currentVenue = c.dataset.venue; filterPubs(); }));
-
-    // --- Copy BibTeX ---
-    document.querySelectorAll('[data-bib]').forEach(btn => btn.addEventListener('click', () => {
-      const id = btn.getAttribute('data-bib');
-      const tpl = document.getElementById('bib-' + id);
-      if(!tpl) return;
-      const text = tpl.textContent.trim();
-      navigator.clipboard.writeText(text).then(() => {
-        const old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(()=> btn.textContent = old, 1200);
-      });
+    chips.forEach(c => c.addEventListener('click', () => {
+      chips.forEach(x=>x.classList.remove('active'));
+      c.classList.add('active'); currentVenue = c.dataset.venue; filterPubs();
     }));
   </script>
 </body>

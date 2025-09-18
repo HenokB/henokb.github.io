@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Henok Ademtew</title>
+  <title>Henok Ademtew — Novel</title>
   <meta name="description" content="Henok Biadglign Ademtew — ML Research Engineer. Research in NLP, culturally-aware evaluation, and vision–language models." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,240 +12,258 @@
   <meta name="theme-color" content="#0b1020" id="metaThemeColor">
   <style>
     :root{
-      --radius: 14px;
-      --shadow: 0 10px 30px rgba(0,0,0,.28);
-      --font-sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      --bg: #ffffff; --panel:#ffffff; --muted:#f1f5f9; --card:#f8fafc; --text:#0b1020; --text-dim:#334155;
-      --brand:#2563eb; --brand-2:#7c3aed; --border:#e2e8f0; --link:#1d4ed8; --focus:#f59e0b;
-      --gap: 28px;
+      --radius: 16px; --shadow: 0 10px 30px rgba(0,0,0,.28);
+      --font-sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --bg: #0b1020; --panel: #0f172a; --muted:#0d1426; --card:#0f1827; --text:#e5e7eb; --text-dim:#cbd5e1;
+      --brand:#60a5fa; --brand-2:#202a77; --border:#243044; --link:#93c5fd; --focus:#f59e0b;
+      --grid-gap: 22px;
     }
-    html[data-theme="dark"]{
-      --bg:#0b1020; --panel:#0f172a; --muted:#111827; --card:#0f1827; --text:#e5e7eb; --text-dim:#cbd5e1;
-      --brand:#60a5fa; --brand-2:#a78bfa; --border:#243044; --link:#93c5fd; --shadow:0 10px 30px rgba(0,0,0,.35);
+    html[data-theme="light"]{
+      --bg:#f8fafc; --panel:#ffffff; --muted:#eef2ff; --card:#f8fafc; --text:#0b1020; --text-dim:#334155;
+      --brand:#2563eb; --brand-2:#202a77; --border:#e2e8f0; --link:#1d4ed8; --shadow:0 10px 30px rgba(0,0,0,.15);
     }
-    @media (prefers-reduced-motion: reduce){
-      *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
-    }
-    body{margin:0; font-family:var(--font-sans); background:var(--bg); color:var(--text); line-height:1.65;}
-    .shell{max-width:1080px; margin:0 auto; display:grid; grid-template-columns: 300px 1fr; gap:var(--gap); padding:var(--gap);}
-    @media (max-width: 960px){
-      :root{ --gap:18px; }
-      .shell{grid-template-columns: 1fr; padding:var(--gap);}
-    }
-    .sidebar{position:sticky; top:18px; align-self:start; background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow)}
-    @media (max-width: 960px){ .sidebar{ position:static; } }
-    .brand{display:flex; align-items:center; gap:14px;}
-    .avatar{width:64px; height:64px; border-radius:12px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); display:flex; align-items:center; justify-content:center; font-weight:800; color:white}
-    .name{font-weight:800; font-size:clamp(1.1rem, 1rem + .8vw, 1.4rem)}
-    .nav{display:flex; flex-direction:column; gap:10px; margin:18px 0}
-    .nav a{display:flex; align-items:center; gap:10px; padding:12px 14px; color:var(--text); text-decoration:none; border:1px solid var(--border); border-radius:12px; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02)); touch-action:manipulation}
-    .nav a:hover{border-color:var(--brand); box-shadow:0 4px 14px rgba(59,130,246,.18)}
-    .nav a:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
-    .social{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
-    .social a{display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border:1px solid var(--border); border-radius:12px; color:var(--text); text-decoration:none}
-    .content{display:flex; flex-direction:column; gap:22px}
-    .card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow)}
-    .section-title{display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 14px;}
-    .section-title h2{margin:0; font-size:1.05rem; letter-spacing:.3px}
-    .hero h1{margin:.2rem 0 .6rem; font-size:clamp(1.6rem, 1.2rem + 1.8vw, 2.4rem); line-height:1.2}
-    .hero p{color:var(--text-dim); margin:.2rem 0}
-    .hero .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(1200px 1200px at 10% -10%, rgba(96,165,250,.15), transparent 50%),
+                         radial-gradient(900px 900px at 120% 10%, rgba(167,139,250,.12), transparent 40%), var(--bg);
+         color:var(--text); font-family:var(--font-sans); line-height:1.65;}
+
+    /* === Shell: Dock | Stage | Rail === */
+    .shell{display:grid; grid-template-columns: 84px minmax(0,1fr) 340px; gap:var(--grid-gap); max-width:1380px; margin:0 auto; padding:var(--grid-gap);}    
+    @media (max-width:1200px){ .shell{ grid-template-columns: 84px 1fr; } .rail{ display:none; } }
+    @media (max-width:780px){ .shell{ grid-template-columns: 1fr; } .dock{ position:fixed; bottom:14px; left:50%; transform:translateX(-50%); width:calc(100% - 24px); z-index:50; }
+                               .dock .stack{ flex-direction:row; justify-content:space-between; }
+                               .dock .brand, .dock .avatar-lg{ display:none; } }
+
+    /* === Dock (left) === */
+    .dock{position:sticky; top:16px; align-self:start; border:1px solid var(--border); background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 60%), var(--panel); border-radius:20px; padding:14px; box-shadow:var(--shadow)}
+    .stack{display:flex; flex-direction:column; gap:12px}
+    .avatar{width:48px; height:48px; border-radius:12px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); display:grid; place-items:center; color:#fff; font-weight:800}
+    .avatar-lg{width:64px;height:64px;border-radius:14px;}
+    .dock a{display:grid; place-items:center; width:52px; height:52px; border-radius:14px; border:1px solid var(--border); color:var(--text); text-decoration:none; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02));}
+    .dock a:hover{border-color:var(--brand); box-shadow:0 6px 16px rgba(96,165,250,.2)}
+    .dock .sep{height:1px; background:var(--border); margin:6px 0}
+
+    /* === Stage (center) === */
+    .stage{display:grid; gap:var(--grid-gap)}
+
+    /* Hero: split marquee + ID stripe */
+    .hero{position:relative; border:1px solid var(--border); border-radius:24px; padding:0; overflow:hidden; background:linear-gradient(180deg, rgba(255,255,255,.03), transparent)}
+    .idstripe{position:absolute; inset:0 auto 0 0; width:80px; background:linear-gradient(180deg, var(--brand), var(--brand-2)); color:white; writing-mode:vertical-rl; text-orientation:mixed; display:flex; align-items:center; justify-content:center; font-weight:800; letter-spacing:.6px}
+    .hero-inner{margin-left:80px; display:grid; grid-template-columns: 1.1fr .9fr; min-height:300px}
+    @media (max-width:920px){ .hero-inner{grid-template-columns:1fr} }
+
+    .hero-col{padding:28px 28px 32px}
+    .hero h1{margin:.2rem 0 .4rem; font-size:clamp(1.6rem, 1.2rem + 2.2vw, 3rem); line-height:1.1}
+    .lead{color:var(--text-dim); max-width:60ch}
+    .tags{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
     .tag{font-size:.85rem; padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:linear-gradient(180deg, transparent, rgba(255,255,255,.02));}
-    .btn{display:inline-flex; align-items:center; gap:8px; padding:12px 14px; border-radius:12px; text-decoration:none; border:1px solid var(--border); background:linear-gradient(180deg, transparent, rgba(255,255,255,.03)); color:var(--text)}
-    .btn:hover{border-color:var(--brand)}
-    .pub-controls{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px}
-    .search{flex:1; min-width:220px; display:flex; align-items:center; gap:8px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:var(--card)}
-    .search input{flex:1; border:none; outline:none; background:transparent; color:var(--text); font-size:1rem}
+
+    .hero-mosaic{display:grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 62px; gap:10px; padding:22px; background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00)); border-left:1px solid var(--border)}
+    .tile{border-radius:14px; border:1px solid var(--border); background:var(--card); box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease}
+    .tile:hover{transform:translateY(-3px); box-shadow:0 12px 26px rgba(0,0,0,.25)}
+    .t1{grid-column: span 3; grid-row: span 2}
+    .t2{grid-column: span 3; grid-row: span 3}
+    .t3{grid-column: span 2; grid-row: span 2}
+    .t4{grid-column: span 2; grid-row: span 1}
+    .t5{grid-column: span 2; grid-row: span 2}
+
+    .tile > .tile-body{padding:14px}
+    .tile h3{margin:0; font-size:1rem}
+    .badge{display:inline-flex; align-items:center; gap:6px; font-size:.8rem; padding:6px 10px; border:1px solid var(--border); border-radius:8px; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02)); text-decoration:none; color:inherit}
+
+    /* Publications: masonry grid with size hints */
+    .section{border:1px solid var(--border); border-radius:24px; background:var(--panel); box-shadow:var(--shadow)}
+    .section-head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 20px; border-bottom:1px solid var(--border)}
+    .section-head h2{margin:0; font-size:1.05rem; letter-spacing:.3px}
+    .controls{display:flex; flex-wrap:wrap; gap:10px}
+    .control{display:flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--border); border-radius:999px; background:var(--card)}
+    .control input{border:none; outline:none; background:transparent; color:var(--text)}
+
+    .pubgrid{display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:14px; padding:16px}
+    .pubcard{display:grid; grid-template-rows: 160px auto; border:1px solid var(--border); border-radius:16px; background:var(--card); overflow:hidden}
+    .pubcard .media{background:#0b1020}
+    .pubcard img{width:100%; height:100%; object-fit:cover}
+    .pubcard .body{padding:14px}
+    .pubcard h3{margin:.2rem 0 .3rem; font-size:1rem}
+    .pubcard h3 a{color:var(--link); text-decoration:none}
+    .pubcard h3 a:hover{text-decoration:underline}
     .chips{display:flex; gap:8px; flex-wrap:wrap}
     .chip{font-size:.85rem; padding:8px 12px; border:1px solid var(--border); border-radius:999px; cursor:pointer; background:var(--card)}
-    .chip.active{border-color:var(--brand); color:var(--link)}
-    .pub{display:grid; grid-template-columns: 120px 1fr; gap:14px; padding:14px; border:1px solid var(--border); border-radius:12px; background:var(--card); transition:transform .15s ease;}
-    .pub:hover{transform:translateY(-2px)}
-    .pub img{width:100%; height:100%; object-fit:cover; border-radius:8px; background:#0b1020}
-    .pub h3{margin:.2rem 0 .4rem; font-size:1rem}
-    .pub h3 a{color:var(--link); text-decoration:none}
-    .pub h3 a:hover{text-decoration:underline}
-    .pub .links{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
-    .badge{display:inline-flex; align-items:center; gap:6px; font-size:.8rem; padding:6px 10px; border:1px solid var(--border); border-radius:8px; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02)); text-decoration:none; color:var(--text)}
-    @media (max-width:700px){ .pub{grid-template-columns: 1fr} }
-    .blog{display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));}
-    .blog .card{padding:16px}
-    .blog h4{margin:.4rem 0}
-    .blog h4 a{color:var(--link); text-decoration:none}
-    .blog h4 a:hover{text-decoration:underline}
-    footer{opacity:.8; font-size:.9rem; padding:18px 0; text-align:center}
-    .theme-toggle{position: fixed; right: 18px; bottom: 18px; z-index: 50; display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:999px; border:1px solid var(--border); background:var(--panel); box-shadow:var(--shadow); color:var(--text); cursor:pointer;}
-    .theme-toggle:hover{ border-color: var(--brand); }
-    @media (max-width: 480px){ .theme-toggle{ right: 12px; bottom: 12px; padding:8px 10px; } }
-    @media print{ .sidebar{position:static; box-shadow:none} .btn,.social,.pub-controls,.theme-toggle{display:none} body{background:#fff; color:#000} .card{border-color:#ccc} }
+    .chip.active{border-color:var(--brand)}
+
+    /* === Rail (right) — sticky timeline === */
+    .rail{position:sticky; top:16px; align-self:start; display:grid; gap:var(--grid-gap)}
+    .timeline{border:1px solid var(--border); border-radius:24px; background:var(--panel); box-shadow:var(--shadow); padding:16px}
+    .timeline h3{margin:.2rem 0 8px}
+    .timeline ul{list-style:none; padding:0; margin:0}
+    .timeline li{position:relative; padding-left:22px; margin:10px 0}
+    .timeline li::before{content:""; position:absolute; left:8px; top:6px; width:6px; height:6px; border-radius:50%; background:linear-gradient(180deg,var(--brand),var(--brand-2))}
+    .timeline time{display:block; font-size:.8rem; opacity:.7}
+
+    /* Blog cards minimal */
+    .bloggrid{display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); padding:16px}
+    .card{border:1px solid var(--border); border-radius:16px; background:var(--panel); box-shadow:var(--shadow)}
+    .card-pad{padding:16px}
+
+    footer{opacity:.8; font-size:.9rem; text-align:center; padding:18px 0}
+
+    /* Theme toggle + Command Palette */
+    .theme-toggle{position: fixed; right: 18px; bottom: 18px; z-index: 60; display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:999px; border:1px solid var(--border); background:var(--panel); box-shadow:var(--shadow); color:var(--text); cursor:pointer;}
+    .cmdk{position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.45); z-index:70}
+    .cmd-modal{width:min(780px, 92vw); border:1px solid var(--border); border-radius:18px; background:var(--panel); box-shadow:var(--shadow); overflow:hidden}
+    .cmd-head{display:flex; align-items:center; gap:8px; padding:12px 14px; border-bottom:1px solid var(--border)}
+    .cmd-head input{flex:1; border:none; outline:none; background:transparent; color:var(--text); font-size:1rem}
+    .cmd-list{max-height:50vh; overflow:auto}
+    .cmd-item{padding:12px 14px; border-top:1px solid var(--border); cursor:pointer}
+    .cmd-item:hover{background:var(--card)}
+
+    @media print{ .dock,.theme-toggle,.cmdk{display:none} body{background:#fff; color:#000} .section,.card{border-color:#ccc} }
   </style>
 </head>
 <body>
   <div class="shell">
-    <aside class="sidebar" aria-label="Profile sidebar">
-      <div class="brand">
-        <div class="avatar" aria-hidden="true">🏊‍♀️</div>
-        <div class="name">Henok Biadglign Ademtew</div>
-      </div>
-
-      <nav class="nav" aria-label="Sections">
-        <a href="#about"><i class="fa-regular fa-user"></i><span>About</span></a>
-        <a href="#news"><i class="fa-regular fa-bell"></i><span>News</span></a>
-        <a href="#publications"><i class="fa-regular fa-file-lines"></i><span>Publications</span></a>
-        <a href="#blog"><i class="fa-regular fa-newspaper"></i><span>Blog</span></a>
-      </nav>
-
-      <div class="social" aria-label="Social links">
-        <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en" title="Google Scholar" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i></a>
-        <a href="https://github.com/henokb" title="GitHub" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i></a>
-        <a href="https://x.com/henokademtew" title="X (Twitter)" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter" aria-hidden="true"></i></a>
-        <a href="mailto:henokb2124@gmail.com" title="Email"><i class="fa-regular fa-envelope" aria-hidden="true"></i></a>
+    <!-- Dock -->
+    <aside class="dock" aria-label="Dock navigation">
+      <div class="stack">
+        <div class="avatar avatar-lg" aria-hidden="true">ኄ</div>
+        <a href="#about" title="About" aria-label="About"><i class="fa-regular fa-user"></i></a>
+        <a href="#publications" title="Publications" aria-label="Publications"><i class="fa-regular fa-file-lines"></i></a>
+        <a href="#blog" title="Blog" aria-label="Blog"><i class="fa-regular fa-newspaper"></i></a>
+        <div class="sep" aria-hidden="true"></div>
+        <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en" target="_blank" rel="noopener" title="Scholar" aria-label="Scholar"><i class="fa-solid fa-graduation-cap"></i></a>
+        <a href="https://github.com/henokb" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="https://x.com/henokademtew" target="_blank" rel="noopener" title="X/Twitter" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+        <a href="mailto:henokb2124@gmail.com" title="Email" aria-label="Email"><i class="fa-regular fa-envelope"></i></a>
       </div>
     </aside>
 
-    <main class="content">
-      <section id="about" class="card hero">
-        <h1 class="sr-only" style="position:absolute;left:-9999px;">About</h1>
-        <p>I work on NLP, vision and language models, and generally deep learning methods, with a focus on resource constrained environments.</p>
-        <div class="tags">
-          <span class="tag">NLP</span>
-          <span class="tag">VLMs</span>
-          <span class="tag">Deep Learning</span>
+    <!-- Stage -->
+    <main class="stage">
+      <!-- HERO -->
+      <section id="about" class="hero" aria-label="Intro">
+        <div class="idstripe"></div>
+        <div class="hero-inner">
+          <div class="hero-col">
+            <h1>Henok Biadglign Ademtew</h1>
+            <p class="lead">I work on NLP, vision–language models, and deep learning for resource‑constrained environments. I like evaluations that reflect culture and real‑world use.</p>
+            <div class="tags" role="list">
+              <span class="tag">NLP</span>
+              <span class="tag">VLMs</span>
+              <span class="tag">Deep Learning</span>
+            </div>
+            <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap">
+              <a class="badge" href="#publications"><i class="fa-regular fa-star"></i> Selected work</a>
+              <button class="badge" id="openCmd" type="button"><i class="fa-regular fa-command"></i> Quick jump </button>
+            </div>
+          </div>
+          <!-- <div class="hero-mosaic" aria-hidden="true">
+            <div class="tile t1"><div class="tile-body"><h3>EMNLP 2025</h3><p class="lead" style="font-size:.95rem">Homophone Normalization for Ge’ez‑script </p></div></div>
+            <div class="tile t2"><div class="tile-body"><h3>CVPR 2025</h3><p class="lead" style="font-size:.95rem">CAAMT </p></div></div>
+            <div class="tile t3"><div class="tile-body"><h3>NAACL 2025</h3><p class="lead" style="font-size:.95rem">ProverbEval </p></div></div>
+            <div class="tile t4"><div class="tile-body"><h3>CVPR 2025</h3></div>ALM Bench</div>
+            <div class="tile t5"><div class="tile-body"><h3>Neurips 2024</h3><p class="lead" style="font-size:.95rem">CVQA</p></div></div>
+          </div> -->
         </div>
       </section>
 
-      <!-- NEW: simple News section (before publications) -->
-      <section id="news" class="card" aria-labelledby="news-title">
-        <div class="section-title">
-          <h2 id="news-title">News</h2>
-        </div>
-        <ul style="margin:0; padding-left:18px; line-height:1.7">
-          <li>
-            <strong>Aug 2025:</strong> Won 2nd place in 
-            
-              InstaDeep's Hackathon at Deep Learning Indaba
-            
-          </li>
-          <li>
-            <strong>Aug 2025:</strong> 2 papers accepted to EMNLP: 
-            <a href="https://arxiv.org/pdf/2507.15142?" target="_blank" rel="noopener noreferrer">
-              Ge’ez Homophone Normalization
-            </a> and 
-            <a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">
-              CAMMT
-            </a>
-          </li>
-          <li>
-            <strong>Jul 2025:</strong> Served as a TA for 
-            <a href="https://www.acvss.ai/" target="_blank" rel="noopener noreferrer">
-              African Computer Vision Summer School
-            </a>
-          </li>
-          <li>
-            <strong>May 2025:</strong> 
-            <a href="https://mbzuai-oryx.github.io/ALM-Bench/" target="_blank" rel="noopener noreferrer">
-              ALM Bench
-            </a> accepted to CVPR
-          </li>
-        </ul>
-      </section>
-      
-
-      <section id="publications" class="card">
-        <div class="section-title">
-          <h2>Selected Publications</h2>
-          <div class="chips" role="tablist" aria-label="Filter by domain">
-            <button class="chip active" data-venue="all" role="tab">All</button>
-            <button class="chip" data-venue="vlm" role="tab">VLM</button>
-            <button class="chip" data-venue="nlp" role="tab">NLP</button>
+      <!-- PUBLICATIONS -->
+      <section id="publications" class="section" aria-labelledby="pubs-title">
+        <div class="section-head">
+          <h2 id="pubs-title">Selected Publications</h2>
+          <div class="controls">
+            <!-- <label class="control" aria-label="Search publications">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              <input id="pubSearch" type="search" placeholder="Search title, author, keyword…" autocomplete="off" />
+            </label> -->
+            <div class="controls">
+              <button class="chip active" data-venue="all" role="tab">All</button>
+              <button class="chip" data-venue="vlm" role="tab">VLM</button>
+              <button class="chip" data-venue="nlp" role="tab">NLP</button>
+            </div>
           </div>
         </div>
-
-        <div class="pub-controls">
-          <label class="search" aria-label="Search publications">
-            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-            <input id="pubSearch" type="search" placeholder="Search title, author, keyword…" autocomplete="off" />
-          </label>
-        </div>
-
-        <div id="pubList" class="stack" style="display:grid; gap:12px">
-          <article class="pub" data-venue="nlp" data-keywords="A Case Against Implicit Standards: Homophone Normalization in Machine Translation for Languages that use the Ge'ez Script">
-            <img src="resources/normalization.png" loading="lazy" alt="Homophone normalization thumbnail" />
-            <div>
+        <div id="pubList" class="pubgrid">
+          <!-- NLP -->
+          <article class="pubcard" data-venue="nlp" data-keywords="A Case Against Implicit Standards: Homophone Normalization in Machine Translation for Languages that use the Ge'ez Script">
+            <div class="media"><img src="resources/normalization.png" loading="lazy" alt="Homophone normalization thumbnail" /></div>
+            <div class="body">
               <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">A Case Against Implicit Standards: Homophone Normalization in Machine Translation for Languages that use the Ge'ez Script</a></h3>
-              <div class="links"><span class="badge">EMNLP Main 2025</span></div>
+              <div class="chips"><span class="badge">EMNLP Main 2025</span></div>
             </div>
           </article>
 
-          <article class="pub" data-venue="vlm" data-keywords="CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation">
-            <img src="resources/cammt.png" loading="lazy" alt="CAMMT thumbnail" />
-            <div>
+          <!-- VLM -->
+          <article class="pubcard" data-venue="vlm" data-keywords="CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation">
+            <div class="media"><img src="resources/cammt.png" loading="lazy" alt="CAMMT thumbnail" /></div>
+            <div class="body">
               <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation</a></h3>
-              <div class="links"><span class="badge">EMNLP Findings 2025</span></div>
+              <div class="chips"><span class="badge">EMNLP Findings 2025</span></div>
             </div>
           </article>
 
-          <article class="pub" data-venue="vlm" data-keywords="ALM ALM-Bench culturally diverse 100 languages LMMs CVPR 2025">
-            <img src="resources/alm.png" loading="lazy" alt="All Languages Matter paper thumbnail" />
-            <div>
+          <article class="pubcard" data-venue="vlm" data-keywords="ALM ALM-Bench culturally diverse 100 languages LMMs CVPR 2025">
+            <div class="media"><img src="resources/alm.png" loading="lazy" alt="All Languages Matter paper thumbnail" /></div>
+            <div class="body">
               <h3><a href="https://arxiv.org/pdf/2411.16508" target="_blank" rel="noopener noreferrer">All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages</a></h3>
-              <div class="links">
-                <span class="badge">CVPR 2025</span>
-                <a class="badge" href="https://mbzuai-oryx.github.io/ALM-Bench/" target="_blank" rel="noopener noreferrer">Project page</a>
-              </div>
+              <div class="chips"><span class="badge">CVPR 2025</span> <a class="badge" href="https://mbzuai-oryx.github.io/ALM-Bench/" target="_blank" rel="noopener noreferrer">Project</a></div>
             </div>
           </article>
 
-          <article class="pub" data-venue="nlp" data-keywords="ProverbEval LLM evaluation low-resource NAACL 2025 proverb">
-            <img src="resources/proverbeval.png" loading="lazy" alt="ProverbEval thumbnail" />
-            <div>
+          <article class="pubcard" data-venue="nlp" data-keywords="ProverbEval LLM evaluation low-resource NAACL 2025 proverb">
+            <div class="media"><img src="resources/proverbeval.png" loading="lazy" alt="ProverbEval thumbnail" /></div>
+            <div class="body">
               <h3><a href="https://arxiv.org/abs/2411.05049" target="_blank" rel="noopener noreferrer">ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding</a></h3>
-              <div class="links">
-                <span class="badge">NAACL 2025</span>
-                <a class="badge" href="https://github.com/EthioNLP/EthioProverbEval" target="_blank" rel="noopener noreferrer">GitHub</a>
-              </div>
+              <div class="chips"><span class="badge">NAACL 2025</span> <a class="badge" href="https://github.com/EthioNLP/EthioProverbEval" target="_blank" rel="noopener noreferrer">GitHub</a></div>
             </div>
           </article>
 
-          <article class="pub" data-venue="vlm" data-keywords="CVQA culturally-diverse multilingual VQA NeurIPS 2024 dataset">
-            <img src="resources/cvqa.png" loading="lazy" alt="CVQA benchmark thumbnail" />
-            <div>
+          <article class="pubcard" data-venue="vlm" data-keywords="CVQA culturally-diverse multilingual VQA NeurIPS 2024 dataset">
+            <div class="media"><img src="resources/cvqa.png" loading="lazy" alt="CVQA benchmark thumbnail" /></div>
+            <div class="body">
               <h3><a href="https://arxiv.org/abs/2406.05967" target="_blank" rel="noopener noreferrer">CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark</a></h3>
-              <div class="links">
-                <span class="badge">NeurIPS D&B 2024</span>
-                <a class="badge" href="https://cvqa-benchmark.org/" target="_blank" rel="noopener noreferrer">Project page</a>
-              </div>
+              <div class="chips"><span class="badge">NeurIPS D&B 2024</span> <a class="badge" href="https://cvqa-benchmark.org/" target="_blank" rel="noopener noreferrer">Project</a></div>
             </div>
           </article>
 
-          <article class="pub" data-venue="nlp" data-keywords="AGE Amharic Ge’ez English parallel dataset ACL 2024 LoResMT Henok">
-            <img src="resources/age.png" loading="lazy" alt="AGE dataset thumbnail" />
-            <div>
+          <article class="pubcard" data-venue="nlp" data-keywords="AGE Amharic Ge’ez English parallel dataset ACL 2024 LoResMT Henok">
+            <div class="media"><img src="resources/age.png" loading="lazy" alt="AGE dataset thumbnail" /></div>
+            <div class="body">
               <h3><a href="https://aclanthology.org/2024.loresmt-1.14/" target="_blank" rel="noopener noreferrer">AGE: Amharic, Ge’ez and English Parallel Dataset</a></h3>
-              <div class="links">
-                <span class="badge">LoResMT, ACL 2024</span>
-                <a class="badge" href="https://henokb.github.io/AGE-Dataset/" target="_blank" rel="noopener noreferrer">Project page</a>
-                <a class="badge" href="https://huggingface.co/datasets/Henok/age_dataset" target="_blank" rel="noopener noreferrer">Dataset</a>
-              </div>
+              <div class="chips"><span class="badge">LoResMT, ACL 2024</span> <a class="badge" href="https://henokb.github.io/AGE-Dataset/" target="_blank" rel="noopener noreferrer">Project</a> <a class="badge" href="https://huggingface.co/datasets/Henok/age_dataset" target="_blank" rel="noopener noreferrer">Dataset</a></div>
             </div>
           </article>
         </div>
       </section>
 
-      <section id="blog" class="card">
-        <div class="section-title"><h2>Blog</h2></div>
-        <div class="blog">
-          <article class="card">
-            <h4><a href="https://medium.com/codex/is-testing-a-life-or-death-situation-89846fa92ce9" target="_blank" rel="noopener noreferrer">Is software testing a life-or-death situation?</a></h4>
+      <!-- BLOG -->
+      <section id="blog" class="section" aria-labelledby="blog-title">
+        <div class="section-head"><h2 id="blog-title">Blog</h2></div>
+        <div class="bloggrid">
+          <article class="card card-pad">
+            <h4 style="margin:.4rem 0"><a href="https://medium.com/codex/is-testing-a-life-or-death-situation-89846fa92ce9" target="_blank" rel="noopener noreferrer">Is software testing a life‑or‑death situation?</a></h4>
           </article>
-          <article class="card">
-            <h4><a href="https://henok.hashnode.dev/mergify-smooth-code-merging" target="_blank" rel="noopener noreferrer">Mergify: Smooth Code Merging</a></h4>
+          <article class="card card-pad">
+            <h4 style="margin:.4rem 0"><a href="https://henok.hashnode.dev/mergify-smooth-code-merging" target="_blank" rel="noopener noreferrer">Mergify: Smooth Code Merging</a></h4>
           </article>
         </div>
       </section>
 
       <footer>© <span id="year"></span></footer>
     </main>
+
+    <!-- Rail: sticky timeline/news -->
+    <aside class="rail" aria-label="News timeline">
+      <section class="timeline">
+        <h3>News</h3>
+        <ul>
+          <li><time>Aug 2025</time> 🏆 Won 2nd place in InstaDeep's Hackathon at Deep Learning Indaba</li>
+          <li><time>Aug 2025</time> 2 papers accepted to EMNLP: Ge’ez Homophone Normalization and CAMMT</li>
+          <li><time>Jul 2025</time> TA for African Computer Vision Summer School</li>
+          <li><time>May 2025</time> ALM Bench accepted to CVPR</li>
+        </ul>
+      </section>
+      
+    </aside>
   </div>
 
   <!-- Schema + Toggle -->
@@ -254,44 +272,62 @@
   </script>
 
   <button class="theme-toggle" id="toggleTheme" type="button" aria-label="Toggle theme" title="Toggle theme">
-    <i class="fa-regular fa-moon"></i><span>Theme</span>
+    <i class="fa-regular fa-moon"></i><span style="margin-left:6px">Theme</span>
   </button>
 
+  <!-- Command Palette -->
+  <div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="cmd-modal">
+      <div class="cmd-head"><i class="fa-regular fa-command"></i><input id="cmdInput" placeholder="Type a command: ‘about’, ‘publications’, ‘blog’, ‘email’, ‘scholar’… (Esc to close)" /></div>
+      <div class="cmd-list" id="cmdList"></div>
+    </div>
+  </div>
+
   <script>
+    // Year + Theme
     document.getElementById('year').textContent = new Date().getFullYear();
     const metaTheme = document.getElementById('metaThemeColor');
     const html = document.documentElement;
     const saved = localStorage.getItem('theme');
     const prefersDark = window.matchMedia?.matches && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    function applyTheme(mode){
-      html.setAttribute('data-theme', mode);
-      html.style.colorScheme = mode;
-      metaTheme.setAttribute('content', mode === 'light' ? '#ffffff' : '#0b1020');
-    }
+    function applyTheme(mode){ html.setAttribute('data-theme', mode); html.style.colorScheme = mode; metaTheme.setAttribute('content', mode === 'light' ? '#ffffff' : '#0b1020'); }
     applyTheme(saved || (prefersDark ? 'dark' : 'light'));
-    document.getElementById('toggleTheme').addEventListener('click', () => {
-      const next = (html.getAttribute('data-theme') === 'dark') ? 'light' : 'dark';
-      localStorage.setItem('theme', next); applyTheme(next);
-    });
+    document.getElementById('toggleTheme').addEventListener('click', () => { const next = (html.getAttribute('data-theme') === 'dark') ? 'light' : 'dark'; localStorage.setItem('theme', next); applyTheme(next); });
 
-    // pubs filter
+    // Publications filter
     const pubSearch = document.getElementById('pubSearch');
     const pubList = document.getElementById('pubList');
     const chips = document.querySelectorAll('.chip');
     let currentVenue = 'all';
-    const filterPubs = () => {
-      const q = (pubSearch?.value || '').toLowerCase();
-      [...pubList.children].forEach(el => {
-        const venueOk = currentVenue==='all' || el.dataset.venue===currentVenue;
-        const text = (el.textContent || '').toLowerCase() + ' ' + (el.dataset.keywords || '').toLowerCase();
-        el.style.display = (venueOk && (!q || text.includes(q))) ? '' : 'none';
-      });
-    };
+    const filterPubs = () => { const q = (pubSearch?.value || '').toLowerCase(); [...pubList.children].forEach(el => { const venueOk = currentVenue==='all' || el.dataset.venue===currentVenue; const text = (el.textContent || '').toLowerCase() + ' ' + (el.dataset.keywords || '').toLowerCase(); el.style.display = (venueOk && (!q || text.includes(q))) ? '' : 'none'; }); };
     pubSearch?.addEventListener('input', filterPubs);
-    chips.forEach(c => c.addEventListener('click', () => {
-      chips.forEach(x=>x.classList.remove('active'));
-      c.classList.add('active'); currentVenue = c.dataset.venue; filterPubs();
-    }));
+    chips.forEach(c => c.addEventListener('click', () => { chips.forEach(x=>x.classList.remove('active')); c.classList.add('active'); currentVenue = c.dataset.venue; filterPubs(); }));
+
+    // Command palette
+    const cmdk = document.getElementById('cmdk');
+    const cmdInput = document.getElementById('cmdInput');
+    const openCmd = document.getElementById('openCmd');
+    const cmdList = document.getElementById('cmdList');
+    const commands = [
+      {label:'Go to About', action:()=>location.hash='#about'},
+      {label:'Go to Publications', action:()=>location.hash='#publications'},
+      {label:'Go to Blog', action:()=>location.hash='#blog'},
+      {label:'Open Scholar', action:()=>window.open('https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en','_blank')},
+      {label:'Open GitHub', action:()=>window.open('https://github.com/henokb','_blank')},
+      {label:'Email Henok', action:()=>location.href='mailto:henokb2124@gmail.com'}
+    ];
+
+    function renderCmdList(q=''){ cmdList.innerHTML=''; commands.filter(c=>c.label.toLowerCase().includes(q.toLowerCase())).forEach(c=>{ const item=document.createElement('div'); item.className='cmd-item'; item.textContent=c.label; item.addEventListener('click',()=>{ c.action(); closeCmd(); }); cmdList.appendChild(item); }); }
+    function openPalette(){ cmdk.style.display='grid'; renderCmdList(''); cmdInput.value=''; cmdInput.focus(); }
+    function closeCmd(){ cmdk.style.display='none'; }
+
+    openCmd.addEventListener('click', openPalette);
+    document.addEventListener('keydown', (e)=>{
+      if(e.key==='/' && !e.metaKey && !e.ctrlKey && document.activeElement.tagName!=='INPUT'){ e.preventDefault(); openPalette(); }
+      if(e.key==='Escape'){ closeCmd(); }
+    });
+    cmdk.addEventListener('click', (e)=>{ if(e.target===cmdk) closeCmd(); });
+    cmdInput.addEventListener('input', ()=>renderCmdList(cmdInput.value));
   </script>
 </body>
 </html>

@@ -1,333 +1,485 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Henok Ademtew — Novel</title>
-  <meta name="description" content="Henok Biadglign Ademtew — ML Research Engineer. Research in NLP, culturally-aware evaluation, and vision–language models." />
+  <title>Henok Biadglign Ademtew</title>
+  <meta name="description" content="Henok Biadglign Ademtew — ML Research Engineer" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/4e5ec95d7e.js" crossorigin="anonymous"></script>
-  <meta name="theme-color" content="#0b1020" id="metaThemeColor">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Sans+Ethiopic:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --radius: 16px; --shadow: 0 10px 30px rgba(0,0,0,.28);
-      --font-sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      --bg: #0b1020; --panel: #0f172a; --muted:#0d1426; --card:#0f1827; --text:#e5e7eb; --text-dim:#cbd5e1;
-      --brand:#60a5fa; --brand-2:#202a77; --border:#243044; --link:#93c5fd; --focus:#f59e0b;
-      --grid-gap: 22px;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fcfbed;
+      color: #1a1a1a;
+      line-height: 1.7;
+      font-size: 15px;
+      font-weight: 300;
+      padding: 40px 20px;
+      position: relative;
+      overflow-x: hidden;
     }
-    html[data-theme="light"]{
-      --bg:#f8fafc; --panel:#ffffff; --muted:#eef2ff; --card:#f8fafc; --text:#0b1020; --text-dim:#334155;
-      --brand:#2563eb; --brand-2:#202a77; --border:#e2e8f0; --link:#1d4ed8; --shadow:0 10px 30px rgba(0,0,0,.15);
+    
+    /* Ethiopian cross pattern background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.03;
+      z-index: 0;
+      background-image: 
+        repeating-linear-gradient(0deg, transparent, transparent 80px, #ffd445 80px, #ffd448 82px),
+        repeating-linear-gradient(90deg, transparent, transparent 80px, #ffd344 80px, #ffd343 82px);
+      pointer-events: none;
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:radial-gradient(1200px 1200px at 10% -10%, rgba(96,165,250,.15), transparent 50%),
-                         radial-gradient(900px 900px at 120% 10%, rgba(167,139,250,.12), transparent 40%), var(--bg);
-         color:var(--text); font-family:var(--font-sans); line-height:1.65;}
-
-    /* === Shell: Dock | Stage | Rail === */
-    .shell{display:grid; grid-template-columns: 84px minmax(0,1fr) 340px; gap:var(--grid-gap); max-width:1380px; margin:0 auto; padding:var(--grid-gap);}    
-    @media (max-width:1200px){ .shell{ grid-template-columns: 84px 1fr; } .rail{ display:none; } }
-    @media (max-width:780px){ .shell{ grid-template-columns: 1fr; } .dock{ position:fixed; bottom:14px; left:50%; transform:translateX(-50%); width:calc(100% - 24px); z-index:50; }
-                               .dock .stack{ flex-direction:row; justify-content:space-between; }
-                               .dock .brand, .dock .avatar-lg{ display:none; } }
-
-    /* === Dock (left) === */
-    .dock{position:sticky; top:16px; align-self:start; border:1px solid var(--border); background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 60%), var(--panel); border-radius:20px; padding:14px; box-shadow:var(--shadow)}
-    .stack{display:flex; flex-direction:column; gap:12px}
-    .avatar{width:48px; height:48px; border-radius:12px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); display:grid; place-items:center; color:#fff; font-weight:800}
-    .avatar-lg{width:64px;height:64px;border-radius:14px;}
-    .dock a{display:grid; place-items:center; width:52px; height:52px; border-radius:14px; border:1px solid var(--border); color:var(--text); text-decoration:none; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02));}
-    .dock a:hover{border-color:var(--brand); box-shadow:0 6px 16px rgba(96,165,250,.2)}
-    .dock .sep{height:1px; background:var(--border); margin:6px 0}
-
-    /* === Stage (center) === */
-    .stage{display:grid; gap:var(--grid-gap)}
-
-    /* Hero: split marquee + ID stripe */
-    .hero{position:relative; border:1px solid var(--border); border-radius:24px; padding:0; overflow:hidden; background:linear-gradient(180deg, rgba(255,255,255,.03), transparent)}
-    .idstripe{position:absolute; inset:0 auto 0 0; width:80px; background:linear-gradient(180deg, var(--brand), var(--brand-2)); color:white; writing-mode:vertical-rl; text-orientation:mixed; display:flex; align-items:center; justify-content:center; font-weight:800; letter-spacing:.6px}
-    .hero-inner{margin-left:80px; display:grid; grid-template-columns: 1.1fr .9fr; min-height:300px}
-    @media (max-width:920px){ .hero-inner{grid-template-columns:1fr} }
-
-    .hero-col{padding:28px 28px 32px}
-    .hero h1{margin:.2rem 0 .4rem; font-size:clamp(1.6rem, 1.2rem + 2.2vw, 3rem); line-height:1.1}
-    .lead{color:var(--text-dim); max-width:60ch}
-    .tags{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
-    .tag{font-size:.85rem; padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:linear-gradient(180deg, transparent, rgba(255,255,255,.02));}
-
-    .hero-mosaic{display:grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 62px; gap:10px; padding:22px; background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00)); border-left:1px solid var(--border)}
-    .tile{border-radius:14px; border:1px solid var(--border); background:var(--card); box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease}
-    .tile:hover{transform:translateY(-3px); box-shadow:0 12px 26px rgba(0,0,0,.25)}
-    .t1{grid-column: span 3; grid-row: span 2}
-    .t2{grid-column: span 3; grid-row: span 3}
-    .t3{grid-column: span 2; grid-row: span 2}
-    .t4{grid-column: span 2; grid-row: span 1}
-    .t5{grid-column: span 2; grid-row: span 2}
-
-    .tile > .tile-body{padding:14px}
-    .tile h3{margin:0; font-size:1rem}
-    .badge{display:inline-flex; align-items:center; gap:6px; font-size:.8rem; padding:6px 10px; border:1px solid var(--border); border-radius:8px; background:linear-gradient(180deg, transparent, rgba(255,255,255,.02)); text-decoration:none; color:inherit}
-
-    /* Publications: masonry grid with size hints */
-    .section{border:1px solid var(--border); border-radius:24px; background:var(--panel); box-shadow:var(--shadow)}
-    .section-head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 20px; border-bottom:1px solid var(--border)}
-    .section-head h2{margin:0; font-size:1.05rem; letter-spacing:.3px}
-    .controls{display:flex; flex-wrap:wrap; gap:10px}
-    .control{display:flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--border); border-radius:999px; background:var(--card)}
-    .control input{border:none; outline:none; background:transparent; color:var(--text)}
-
-    .pubgrid{display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:14px; padding:16px}
-    .pubcard{display:grid; grid-template-rows: 160px auto; border:1px solid var(--border); border-radius:16px; background:var(--card); overflow:hidden}
-    .pubcard .media{background:#0b1020}
-    .pubcard img{width:100%; height:100%; object-fit:cover}
-    .pubcard .body{padding:14px}
-    .pubcard h3{margin:.2rem 0 .3rem; font-size:1rem}
-    .pubcard h3 a{color:var(--link); text-decoration:none}
-    .pubcard h3 a:hover{text-decoration:underline}
-    .chips{display:flex; gap:8px; flex-wrap:wrap}
-    .chip{font-size:.85rem; padding:8px 12px; border:1px solid var(--border); border-radius:999px; cursor:pointer; background:var(--card)}
-    .chip.active{border-color:var(--brand)}
-
-    /* === Rail (right) — sticky timeline === */
-    .rail{position:sticky; top:16px; align-self:start; display:grid; gap:var(--grid-gap)}
-    .timeline{border:1px solid var(--border); border-radius:24px; background:var(--panel); box-shadow:var(--shadow); padding:16px}
-    .timeline h3{margin:.2rem 0 8px}
-    .timeline ul{list-style:none; padding:0; margin:0}
-    .timeline li{position:relative; padding-left:22px; margin:10px 0}
-    .timeline li::before{content:""; position:absolute; left:8px; top:6px; width:6px; height:6px; border-radius:50%; background:linear-gradient(180deg,var(--brand),var(--brand-2))}
-    .timeline time{display:block; font-size:.8rem; opacity:.7}
-
-    /* Blog cards minimal */
-    .bloggrid{display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); padding:16px}
-    .card{border:1px solid var(--border); border-radius:16px; background:var(--panel); box-shadow:var(--shadow)}
-    .card-pad{padding:16px}
-
-    footer{opacity:.8; font-size:.9rem; text-align:center; padding:18px 0}
-
-    /* Theme toggle + Command Palette */
-    .theme-toggle{position: fixed; right: 18px; bottom: 18px; z-index: 60; display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:999px; border:1px solid var(--border); background:var(--panel); box-shadow:var(--shadow); color:var(--text); cursor:pointer;}
-    .cmdk{position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.45); z-index:70}
-    .cmd-modal{width:min(780px, 92vw); border:1px solid var(--border); border-radius:18px; background:var(--panel); box-shadow:var(--shadow); overflow:hidden}
-    .cmd-head{display:flex; align-items:center; gap:8px; padding:12px 14px; border-bottom:1px solid var(--border)}
-    .cmd-head input{flex:1; border:none; outline:none; background:transparent; color:var(--text); font-size:1rem}
-    .cmd-list{max-height:50vh; overflow:auto}
-    .cmd-item{padding:12px 14px; border-top:1px solid var(--border); cursor:pointer}
-    .cmd-item:hover{background:var(--card)}
-
-    @media print{ .dock,.theme-toggle,.cmdk{display:none} body{background:#fff; color:#000} .section,.card{border-color:#ccc} }
+    
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Ethiopian decorative header */
+    .ethiopic-header {
+      text-align: center;
+      margin-bottom: 32px;
+      position: relative;
+    }
+    
+    .ethiopic-ornament {
+      font-family: 'Noto Sans Ethiopic', serif;
+      font-size: 57px;
+      color: #ffc918;
+      opacity: 0.4;
+      line-height: 1;
+      user-select: none;
+      letter-spacing: 8px;
+    }
+    
+    .ethiopic-script {
+      font-family: 'Noto Sans Ethiopic', serif;
+      font-size: 13px;
+      color: #888;
+      margin-top: 8px;
+      letter-spacing: 2px;
+    }
+    
+    h1 {
+      font-size: 22px;
+      font-weight: 400;
+      margin: 16px 0 8px;
+      color: #0a0a0a;
+      position: relative;
+    }
+    
+    h1::before,
+    h1::after {
+      content: '፠';
+      font-family: 'Noto Sans Ethiopic', serif;
+      color: #d4af37;
+      opacity: 0.3;
+      margin: 0 12px;
+      font-size: 14px;
+    }
+    
+    h2 {
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 48px 0 20px;
+      color: #666;
+      position: relative;
+      padding-left: 24px;
+    }
+    
+    h2::before {
+      content: '፨';
+      font-family: 'Noto Sans Ethiopic', serif;
+      position: absolute;
+      left: 0;
+      color: #d4af37;
+      opacity: 0.5;
+      font-size: 18px;
+    }
+    
+    p {
+      margin-bottom: 12px;
+      color: #444;
+    }
+    
+    a {
+      color: #1a1a1a;
+      text-decoration: none;
+      border-bottom: 1px solid #ddd;
+      transition: border-color 0.2s;
+    }
+    
+    a:hover {
+      border-bottom-color: #d4af37;
+    }
+    
+    .intro {
+      margin-bottom: 32px;
+      position: relative;
+    }
+    
+    /* Ethiopian cross decoration */
+    .cross-decoration {
+      position: absolute;
+      right: -40px;
+      top: 0;
+      width: 120px;
+      height: 120px;
+      opacity: 0.08;
+      pointer-events: none;
+    }
+    
+    .links {
+      display: flex;
+      gap: 16px;
+      margin: 16px 0 32px;
+      font-size: 14px;
+      flex-wrap: wrap;
+    }
+    
+    .links::before {
+      content: '፡';
+      font-family: 'Noto Sans Ethiopic', serif;
+      color: #d4af37;
+      opacity: 0.4;
+    }
+    
+    .links::after {
+      content: '፡';
+      font-family: 'Noto Sans Ethiopic', serif;
+      color: #d4af37;
+      opacity: 0.4;
+    }
+    
+    .pub {
+      margin-bottom: 28px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      position: relative;
+      padding-left: 8px;
+      border-left: 2px solid transparent;
+      transition: border-color 0.3s;
+    }
+    
+    .pub:hover {
+      border-left-color: #d4af37;
+    }
+    
+    .pub::before {
+      content: '፧';
+      font-family: 'Noto Sans Ethiopic', serif;
+      position: absolute;
+      left: -8px;
+      top: 8px;
+      color: #d4af37;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 12px;
+    }
+    
+    .pub:hover::before {
+      opacity: 0.5;
+    }
+    
+    .pub img {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      flex-shrink: 0;
+      opacity: 0.85;
+      border: 1px solid #f0f0f0;
+    }
+    
+    .pub-content h3 {
+      font-size: 15px;
+      font-weight: 400;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+    
+    .pub-meta {
+      font-size: 13px;
+      color: #888;
+    }
+    
+    .pub-meta a {
+      font-size: 13px;
+      color: #666;
+      margin-left: 8px;
+    }
+    
+    .news-item {
+      margin-bottom: 12px;
+      font-size: 14px;
+      padding-left: 16px;
+      position: relative;
+    }
+    
+    .news-item::before {
+      content: '፠';
+      font-family: 'Noto Sans Ethiopic', serif;
+      position: absolute;
+      left: 0;
+      color: #d4af37;
+      opacity: 0.3;
+      font-size: 12px;
+    }
+    
+    .news-item time {
+      color: #999;
+      font-size: 13px;
+      display: inline-block;
+      min-width: 80px;
+    }
+    
+    /* Ethiopian pattern divider */
+    .pattern-divider {
+      text-align: center;
+      margin: 48px 0;
+      font-family: 'Noto Sans Ethiopic', serif;
+      color: #d4af37;
+      opacity: 0.2;
+      font-size: 24px;
+      letter-spacing: 16px;
+      user-select: none;
+    }
+    
+    footer {
+      margin-top: 64px;
+      text-align: center;
+      font-size: 13px;
+      color: #aaa;
+      position: relative;
+      padding-top: 24px;
+    }
+    
+    footer::before {
+      content: '፨ ፠ ፨';
+      font-family: 'Noto Sans Ethiopic', serif;
+      display: block;
+      color: #ffc400;
+      opacity: 0.3;
+      margin-bottom: 16px;
+      letter-spacing: 8px;
+    }
+    
+    /* Animated Ethiopian cross SVG */
+    .ethiopic-cross {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 80px;
+      height: 80px;
+      opacity: 0.06;
+      z-index: 0;
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+    
+    /* Side decorative elements */
+    .side-ornament {
+      position: fixed;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Noto Sans Ethiopic', serif;
+      font-size: 16px;
+      color: #d4af37;
+      opacity: 0.08;
+      writing-mode: vertical-rl;
+      letter-spacing: 12px;
+      z-index: 0;
+      user-select: none;
+    }
+    
+    @media (max-width: 900px) {
+      .side-ornament,
+      .ethiopic-cross {
+        display: none;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      body { padding: 24px 16px; }
+      .pub { flex-direction: column; gap: 12px; padding-left: 0; border-left: none; }
+      .pub img { width: 100%; height: 140px; }
+      .links { flex-wrap: wrap; }
+      h1::before, h1::after { display: none; }
+      .cross-decoration { display: none; }
+    }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <!-- Dock -->
-    <aside class="dock" aria-label="Dock navigation">
-      <div class="stack">
-        <div class="avatar avatar-lg" aria-hidden="true">ኄ</div>
-        <a href="#about" title="About" aria-label="About"><i class="fa-regular fa-user"></i></a>
-        <a href="#publications" title="Publications" aria-label="Publications"><i class="fa-regular fa-file-lines"></i></a>
-        <a href="#blog" title="Blog" aria-label="Blog"><i class="fa-regular fa-newspaper"></i></a>
-        <div class="sep" aria-hidden="true"></div>
-        <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en" target="_blank" rel="noopener" title="Scholar" aria-label="Scholar"><i class="fa-solid fa-graduation-cap"></i></a>
-        <a href="https://github.com/henokb" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
-        <a href="https://x.com/henokademtew" target="_blank" rel="noopener" title="X/Twitter" aria-label="X"><i class="fab fa-x-twitter"></i></a>
-        <a href="mailto:henokb2124@gmail.com" title="Email" aria-label="Email"><i class="fa-regular fa-envelope"></i></a>
-      </div>
-    </aside>
+  <!-- Floating Ethiopian cross -->
+  <svg class="ethiopic-cross" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#d4af37" stroke-width="1.5" fill="none">
+      <line x1="50" y1="10" x2="50" y2="90"/>
+      <line x1="10" y1="50" x2="90" y2="50"/>
+      <circle cx="50" cy="50" r="15"/>
+      <path d="M 50 10 L 45 20 L 55 20 Z"/>
+      <path d="M 50 90 L 45 80 L 55 80 Z"/>
+      <path d="M 10 50 L 20 45 L 20 55 Z"/>
+      <path d="M 90 50 L 80 45 L 80 55 Z"/>
+    </g>
+  </svg>
 
-    <!-- Stage -->
-    <main class="stage">
-      <!-- HERO -->
-      <section id="about" class="hero" aria-label="Intro">
-        <div class="idstripe"></div>
-        <div class="hero-inner">
-          <div class="hero-col">
-            <h1>Henok Biadglign Ademtew</h1>
-            <p class="lead">I work on NLP, vision–language models, and deep learning for resource‑constrained environments. I like evaluations that reflect culture and real‑world use.</p>
-            <div class="tags" role="list">
-              <span class="tag">NLP</span>
-              <span class="tag">VLMs</span>
-              <span class="tag">Deep Learning</span>
-            </div>
-            <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap">
-              <a class="badge" href="#publications"><i class="fa-regular fa-star"></i> Selected work</a>
-              <button class="badge" id="openCmd" type="button"><i class="fa-regular fa-command"></i> Quick jump </button>
-            </div>
-          </div>
-          <!-- <div class="hero-mosaic" aria-hidden="true">
-            <div class="tile t1"><div class="tile-body"><h3>EMNLP 2025</h3><p class="lead" style="font-size:.95rem">Homophone Normalization for Ge’ez‑script </p></div></div>
-            <div class="tile t2"><div class="tile-body"><h3>CVPR 2025</h3><p class="lead" style="font-size:.95rem">CAAMT </p></div></div>
-            <div class="tile t3"><div class="tile-body"><h3>NAACL 2025</h3><p class="lead" style="font-size:.95rem">ProverbEval </p></div></div>
-            <div class="tile t4"><div class="tile-body"><h3>CVPR 2025</h3></div>ALM Bench</div>
-            <div class="tile t5"><div class="tile-body"><h3>Neurips 2024</h3><p class="lead" style="font-size:.95rem">CVQA</p></div></div>
-          </div> -->
-        </div>
-      </section>
+  <!-- Side ornament -->
+  <div class="side-ornament">፠፨፠፨፠፨፠</div>
 
-      <!-- PUBLICATIONS -->
-      <section id="publications" class="section" aria-labelledby="pubs-title">
-        <div class="section-head">
-          <h2 id="pubs-title">Selected Publications</h2>
-          <div class="controls">
-            <!-- <label class="control" aria-label="Search publications">
-              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-              <input id="pubSearch" type="search" placeholder="Search title, author, keyword…" autocomplete="off" />
-            </label> -->
-            <div class="controls">
-              <button class="chip active" data-venue="all" role="tab">All</button>
-              <button class="chip" data-venue="vlm" role="tab">VLM</button>
-              <button class="chip" data-venue="nlp" role="tab">NLP</button>
-            </div>
-          </div>
-        </div>
-        <div id="pubList" class="pubgrid">
-          <!-- NLP -->
-          <article class="pubcard" data-venue="nlp" data-keywords="A Case Against Implicit Standards: Homophone Normalization in Machine Translation for Languages that use the Ge'ez Script">
-            <div class="media"><img src="resources/normalization.png" loading="lazy" alt="Homophone normalization thumbnail" /></div>
-            <div class="body">
-              <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">A Case Against Implicit Standards: Homophone Normalization in Machine Translation for Languages that use the Ge'ez Script</a></h3>
-              <div class="chips"><span class="badge">EMNLP Main 2025</span></div>
-            </div>
-          </article>
-
-          <!-- VLM -->
-          <article class="pubcard" data-venue="vlm" data-keywords="CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation">
-            <div class="media"><img src="resources/cammt.png" loading="lazy" alt="CAMMT thumbnail" /></div>
-            <div class="body">
-              <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener noreferrer">CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation</a></h3>
-              <div class="chips"><span class="badge">EMNLP Findings 2025</span></div>
-            </div>
-          </article>
-
-          <article class="pubcard" data-venue="vlm" data-keywords="ALM ALM-Bench culturally diverse 100 languages LMMs CVPR 2025">
-            <div class="media"><img src="resources/alm.png" loading="lazy" alt="All Languages Matter paper thumbnail" /></div>
-            <div class="body">
-              <h3><a href="https://arxiv.org/pdf/2411.16508" target="_blank" rel="noopener noreferrer">All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages</a></h3>
-              <div class="chips"><span class="badge">CVPR 2025</span> <a class="badge" href="https://mbzuai-oryx.github.io/ALM-Bench/" target="_blank" rel="noopener noreferrer">Project</a></div>
-            </div>
-          </article>
-
-          <article class="pubcard" data-venue="nlp" data-keywords="ProverbEval LLM evaluation low-resource NAACL 2025 proverb">
-            <div class="media"><img src="resources/proverbeval.png" loading="lazy" alt="ProverbEval thumbnail" /></div>
-            <div class="body">
-              <h3><a href="https://arxiv.org/abs/2411.05049" target="_blank" rel="noopener noreferrer">ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding</a></h3>
-              <div class="chips"><span class="badge">NAACL 2025</span> <a class="badge" href="https://github.com/EthioNLP/EthioProverbEval" target="_blank" rel="noopener noreferrer">GitHub</a></div>
-            </div>
-          </article>
-
-          <article class="pubcard" data-venue="vlm" data-keywords="CVQA culturally-diverse multilingual VQA NeurIPS 2024 dataset">
-            <div class="media"><img src="resources/cvqa.png" loading="lazy" alt="CVQA benchmark thumbnail" /></div>
-            <div class="body">
-              <h3><a href="https://arxiv.org/abs/2406.05967" target="_blank" rel="noopener noreferrer">CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark</a></h3>
-              <div class="chips"><span class="badge">NeurIPS D&B 2024</span> <a class="badge" href="https://cvqa-benchmark.org/" target="_blank" rel="noopener noreferrer">Project</a></div>
-            </div>
-          </article>
-
-          <article class="pubcard" data-venue="nlp" data-keywords="AGE Amharic Ge’ez English parallel dataset ACL 2024 LoResMT Henok">
-            <div class="media"><img src="resources/age.png" loading="lazy" alt="AGE dataset thumbnail" /></div>
-            <div class="body">
-              <h3><a href="https://aclanthology.org/2024.loresmt-1.14/" target="_blank" rel="noopener noreferrer">AGE: Amharic, Ge’ez and English Parallel Dataset</a></h3>
-              <div class="chips"><span class="badge">LoResMT, ACL 2024</span> <a class="badge" href="https://henokb.github.io/AGE-Dataset/" target="_blank" rel="noopener noreferrer">Project</a> <a class="badge" href="https://huggingface.co/datasets/Henok/age_dataset" target="_blank" rel="noopener noreferrer">Dataset</a></div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <!-- BLOG -->
-      <section id="blog" class="section" aria-labelledby="blog-title">
-        <div class="section-head"><h2 id="blog-title">Blog</h2></div>
-        <div class="bloggrid">
-          <article class="card card-pad">
-            <h4 style="margin:.4rem 0"><a href="https://medium.com/codex/is-testing-a-life-or-death-situation-89846fa92ce9" target="_blank" rel="noopener noreferrer">Is software testing a life‑or‑death situation?</a></h4>
-          </article>
-          <article class="card card-pad">
-            <h4 style="margin:.4rem 0"><a href="https://henok.hashnode.dev/mergify-smooth-code-merging" target="_blank" rel="noopener noreferrer">Mergify: Smooth Code Merging</a></h4>
-          </article>
-        </div>
-      </section>
-
-      <footer>© <span id="year"></span></footer>
-    </main>
-
-    <!-- Rail: sticky timeline/news -->
-    <aside class="rail" aria-label="News timeline">
-      <section class="timeline">
-        <h3>News</h3>
-        <ul>
-          <li><time>Aug 2025</time> 🏆 Won 2nd place in InstaDeep's Hackathon at Deep Learning Indaba</li>
-          <li><time>Aug 2025</time> 2 papers accepted to EMNLP: Ge’ez Homophone Normalization and CAMMT</li>
-          <li><time>Jul 2025</time> TA for African Computer Vision Summer School</li>
-          <li><time>May 2025</time> ALM Bench accepted to CVPR</li>
-        </ul>
-      </section>
-      
-    </aside>
-  </div>
-
-  <!-- Schema + Toggle -->
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Person","name":"Henok Biadglign Ademtew","jobTitle":"ML Research Engineer","affiliation":{"@type":"Organization","name":"Vella"},"url":"https://henokb.github.io","sameAs":["https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en","https://github.com/henokb","https://x.com/henokademtew"]}
-  </script>
-
-  <button class="theme-toggle" id="toggleTheme" type="button" aria-label="Toggle theme" title="Toggle theme">
-    <i class="fa-regular fa-moon"></i><span style="margin-left:6px">Theme</span>
-  </button>
-
-  <!-- Command Palette -->
-  <div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
-    <div class="cmd-modal">
-      <div class="cmd-head"><i class="fa-regular fa-command"></i><input id="cmdInput" placeholder="Type a command: ‘about’, ‘publications’, ‘blog’, ‘email’, ‘scholar’… (Esc to close)" /></div>
-      <div class="cmd-list" id="cmdList"></div>
+  <div class="container">
+    <div class="ethiopic-header">
+      <div class="ethiopic-ornament">፨ ፠ ፨</div>
+      <div class="ethiopic-script"></div>
     </div>
+
+    <div class="intro">
+      <svg class="cross-decoration" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#d4af37" stroke-width="2" fill="none" opacity="0.5">
+          <line x1="60" y1="20" x2="60" y2="100"/>
+          <line x1="20" y1="60" x2="100" y2="60"/>
+          <circle cx="60" cy="60" r="20"/>
+          <circle cx="60" cy="60" r="30"/>
+          <path d="M 60 20 L 52 35 L 68 35 Z"/>
+          <path d="M 60 100 L 52 85 L 68 85 Z"/>
+          <path d="M 20 60 L 35 52 L 35 68 Z"/>
+          <path d="M 100 60 L 85 52 L 85 68 Z"/>
+        </g>
+      </svg>
+      
+      <h1>Henok Biadglign Ademtew</h1>
+      <p>I study how machines can interpret/understand human languages, vision-language models and generally deep learning. I like open source; releasing datasets, software projects, and tools. Previously, I worked as an ML engineer at <a href="https://aii.et/">EAII</a> and <a href="https://vella.ai">vella.ai</a></p>      
+      <div class="links">
+        <a href="mailto:henokb2124@gmail.com">Email</a>
+        <a href="https://github.com/henokb" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>
+        <a href="https://x.com/henokademtew" target="_blank" rel="noopener">Twitter</a>
+        <a href="https://www.linkedin.com/in/henok-b-ademtew-7729b2183/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+
+    <h2>News</h2>
+    
+    <div class="news-item">
+      <time>Aug 2025</time> Won 2nd place in InstaDeep's Hackathon at Deep Learning Indaba
+    </div>
+    <div class="news-item">
+      <time>Aug 2025</time> 2 papers accepted to EMNLP: Ge'ez Homophone Normalization and CAMMT
+    </div>
+    <div class="news-item">
+      <time>Jul 2025</time> TA for African Computer Vision Summer School
+    </div>
+    <div class="news-item">
+      <time>May 2025</time> ALM Bench accepted to CVPR
+    </div>
+
+
+    <h2>Publications</h2>
+    
+    <div class="pub">
+      <img src="resources/normalization.png" alt="" loading="lazy" />
+      <div class="pub-content">
+        <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener">A Case Against Implicit Standards: Homophone Normalization in Machine Translation for Languages that use the Ge'ez Script</a></h3>
+        <div class="pub-meta">EMNLP Main 2025</div>
+      </div>
+    </div>
+
+    <div class="pub">
+      <img src="resources/cammt.png" alt="" loading="lazy" />
+      <div class="pub-content">
+        <h3><a href="https://arxiv.org/pdf/2505.24456" target="_blank" rel="noopener">CAMMT: Benchmarking Culturally Aware Multimodal Machine Translation</a></h3>
+        <div class="pub-meta">EMNLP Findings 2025</div>
+      </div>
+    </div>
+
+    <div class="pub">
+      <img src="resources/alm.png" alt="" loading="lazy" />
+      <div class="pub-content">
+        <h3><a href="https://arxiv.org/pdf/2411.16508" target="_blank" rel="noopener">All Languages Matter: Evaluating LMMs on Culturally Diverse 100 Languages</a></h3>
+        <div class="pub-meta">
+          CVPR 2025
+        </div>
+      </div>
+    </div>
+
+    <div class="pub">
+      <img src="resources/proverbeval.png" alt="" loading="lazy" />
+      <div class="pub-content">
+        <h3><a href="https://arxiv.org/abs/2411.05049" target="_blank" rel="noopener">ProverbEval: Exploring LLM Evaluation Challenges for Low-resource Language Understanding</a></h3>
+        <div class="pub-meta">
+          NAACL 2025
+        </div>
+      </div>
+    </div>
+
+    <div class="pub">
+      <img src="resources/cvqa.png" alt="" loading="lazy" />
+      <div class="pub-content">
+        <h3><a href="https://arxiv.org/abs/2406.05967" target="_blank" rel="noopener">CVQA: Culturally-diverse Multilingual Visual Question Answering Benchmark</a></h3>
+        <div class="pub-meta">
+          NeurIPS D&B 2024
+        </div>
+      </div>
+    </div>
+
+    <div class="pub">
+      <img src="resources/manyshot.png" alt="" loading="lazy" />
+      <div class="pub-content">
+        <h3><a href="https://neurips.cc/media/PosterPDFs/NeurIPS%202024/108270.png?t=1731635505.260565" target="_blank" rel="noopener">Many-Shot In-Context Learning: A Solution or Just an Enhancement for Low-Resource NLP?
+        </a></h3>
+        <div class="pub-meta">
+          Black in AI workshop, NeurIPS 2024
+          <a href="https://neurips.cc/media/PosterPDFs/NeurIPS%202024/108270.png?t=1731635505.260565" target="_blank" rel="noopener">Poster</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub">
+      <img src="resources/age.png" alt="" loading="lazy" />
+      <div class="pub-content">
+        <h3><a href="https://aclanthology.org/2024.loresmt-1.14/" target="_blank" rel="noopener">AGE: Amharic, Ge'ez and English Parallel Dataset</a></h3>
+        <div class="pub-meta">
+          LoResMT workshop, ACL 2024
+          <a href="https://huggingface.co/datasets/Henok/age_dataset" target="_blank" rel="noopener">Dataset</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pattern-divider">፨ ፠ ፧ ፠ ፨</div>
+
+    
+
+    <h2>Random thoughts</h2>
+    
+    <div class="news-item">
+      <a href="https://medium.com/codex/is-testing-a-life-or-death-situation-89846fa92ce9" target="_blank" rel="noopener">Is software testing a life‑or‑death situation?</a>
+    </div>
+    <div class="news-item">
+      <a href="https://henok.hashnode.dev/mergify-smooth-code-merging" target="_blank" rel="noopener">Mergify: Smooth Code Merging</a>
+    </div>
+
+    <footer>© <span id="year"></span> Henok Biadglign Ademtew</footer>
   </div>
 
   <script>
-    // Year + Theme
     document.getElementById('year').textContent = new Date().getFullYear();
-    const metaTheme = document.getElementById('metaThemeColor');
-    const html = document.documentElement;
-    const saved = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia?.matches && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    function applyTheme(mode){ html.setAttribute('data-theme', mode); html.style.colorScheme = mode; metaTheme.setAttribute('content', mode === 'light' ? '#ffffff' : '#0b1020'); }
-    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
-    document.getElementById('toggleTheme').addEventListener('click', () => { const next = (html.getAttribute('data-theme') === 'dark') ? 'light' : 'dark'; localStorage.setItem('theme', next); applyTheme(next); });
-
-    // Publications filter
-    const pubSearch = document.getElementById('pubSearch');
-    const pubList = document.getElementById('pubList');
-    const chips = document.querySelectorAll('.chip');
-    let currentVenue = 'all';
-    const filterPubs = () => { const q = (pubSearch?.value || '').toLowerCase(); [...pubList.children].forEach(el => { const venueOk = currentVenue==='all' || el.dataset.venue===currentVenue; const text = (el.textContent || '').toLowerCase() + ' ' + (el.dataset.keywords || '').toLowerCase(); el.style.display = (venueOk && (!q || text.includes(q))) ? '' : 'none'; }); };
-    pubSearch?.addEventListener('input', filterPubs);
-    chips.forEach(c => c.addEventListener('click', () => { chips.forEach(x=>x.classList.remove('active')); c.classList.add('active'); currentVenue = c.dataset.venue; filterPubs(); }));
-
-    // Command palette
-    const cmdk = document.getElementById('cmdk');
-    const cmdInput = document.getElementById('cmdInput');
-    const openCmd = document.getElementById('openCmd');
-    const cmdList = document.getElementById('cmdList');
-    const commands = [
-      {label:'Go to About', action:()=>location.hash='#about'},
-      {label:'Go to Publications', action:()=>location.hash='#publications'},
-      {label:'Go to Blog', action:()=>location.hash='#blog'},
-      {label:'Open Scholar', action:()=>window.open('https://scholar.google.com/citations?user=7t9kIY0AAAAJ&hl=en','_blank')},
-      {label:'Open GitHub', action:()=>window.open('https://github.com/henokb','_blank')},
-      {label:'Email Henok', action:()=>location.href='mailto:henokb2124@gmail.com'}
-    ];
-
-    function renderCmdList(q=''){ cmdList.innerHTML=''; commands.filter(c=>c.label.toLowerCase().includes(q.toLowerCase())).forEach(c=>{ const item=document.createElement('div'); item.className='cmd-item'; item.textContent=c.label; item.addEventListener('click',()=>{ c.action(); closeCmd(); }); cmdList.appendChild(item); }); }
-    function openPalette(){ cmdk.style.display='grid'; renderCmdList(''); cmdInput.value=''; cmdInput.focus(); }
-    function closeCmd(){ cmdk.style.display='none'; }
-
-    openCmd.addEventListener('click', openPalette);
-    document.addEventListener('keydown', (e)=>{
-      if(e.key==='/' && !e.metaKey && !e.ctrlKey && document.activeElement.tagName!=='INPUT'){ e.preventDefault(); openPalette(); }
-      if(e.key==='Escape'){ closeCmd(); }
-    });
-    cmdk.addEventListener('click', (e)=>{ if(e.target===cmdk) closeCmd(); });
-    cmdInput.addEventListener('input', ()=>renderCmdList(cmdInput.value));
   </script>
 </body>
 </html>

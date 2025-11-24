@@ -255,6 +255,29 @@ footer {
   color: #2563eb;
 }
 
+.github-stats {
+  display: inline-block;
+  margin-left: 12px;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.stats-separator {
+  color: #d1d5db;
+  margin: 0 4px;
+}
+
+.stat-item {
+  margin: 0 8px 0 0;
+  display: inline-block;
+}
+
+.stat-icon {
+  margin-right: 4px;
+  font-size: 13px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   body {

@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Running Qwen3.5-27B on a Single A100 Henok Biadglign Ademtew</title>
+  <meta name="description" content="Running Qwen3.5-27B Multimodal on a Single A100-SXM4-80GB: What the Official Docs Don't Tell You" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../stylesheets/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  <style>
+    .blog-content { line-height: 1.8; }
+    .blog-content h1 { font-size: 32px; font-weight: 500; line-height: 1.3; margin: 0 0 24px 0; color: #1a1a1a; letter-spacing: -0.5px; }
+    .blog-content h2 { font-size: 24px; font-weight: 500; text-transform: none; letter-spacing: -0.3px; margin: 48px 0 20px 0; color: #1a1a1a; border-bottom: none; padding-bottom: 0; }
+    .blog-content h3 { font-size: 20px; font-weight: 500; margin: 32px 0 12px 0; color: #1a1a1a; letter-spacing: -0.2px; }
+    .blog-content h4 { font-size: 18px; font-weight: 500; margin: 24px 0 10px 0; color: #1a1a1a; }
+    .blog-content p { margin: 0 0 16px 0; color: #4a5568; font-size: 17px; line-height: 1.75; }
+    .blog-content strong { font-weight: 600; color: #1a1a1a; }
+    .blog-content em { font-style: italic; }
+    .blog-content hr { border: none; border-top: 1px solid #e8e8e8; margin: 32px 0; }
+    .blog-content pre, .blog-content code { font-family: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace; font-size: 14px; line-height: 1.6; }
+    .blog-content pre { background: #f5f5f5; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #e8e8e8; }
+    .blog-content pre code { background: transparent; padding: 0; border: none; color: #1a1a1a; font-size: 14px; }
+    .blog-content code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 15px; border: 1px solid #e8e8e8; color: #d63384; }
+    .blog-content ul, .blog-content ol { margin: 16px 0; padding-left: 24px; color: #4a5568; }
+    .blog-content li { margin-bottom: 8px; line-height: 1.7; }
+    .blog-content blockquote { border-left: 4px solid #2563eb; padding-left: 16px; margin: 20px 0; color: #4a5568; }
+    .blog-content blockquote p { margin-bottom: 8px; }
+    .blog-content blockquote p:last-child { margin-bottom: 0; }
+    .blog-content a { color: #2563eb; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s ease; }
+    .blog-content a:hover { color: #1d4ed8; border-bottom-color: #2563eb; }
+    .blog-content table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 15px; }
+    .blog-content table th, .blog-content table td { padding: 12px; text-align: left; border: 1px solid #e8e8e8; }
+    .blog-content table th { background: #f5f5f5; font-weight: 500; color: #1a1a1a; }
+    .blog-content table td { color: #4a5568; }
+    .blog-content table tr:nth-child(even) { background: #fafafa; }
+    .back-link { display: inline-block; margin-bottom: 32px; font-size: 15px; color: #4a5568; }
+    .back-link:hover { color: #2563eb; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../pages/research.html">Research</a></li>
+        <li><a href="../pages/code.html">Code</a></li>
+        <li><a href="../pages/misc.html">Misc</a></li>
+      </ul>
+    </nav>
+
+    <div class="blog-content">
+      <h1>Running Qwen3.5-27B Multimodal on a Single A100 GPU</h1>
+      <p><a href="../pages/misc.html" class="back-link">← Back to Misc</a></p>
+
+      <p>The Qwen3.5-27B model card on Hugging Face is clear about the deployment setup: <code>tensor-parallel-size 8</code>, meaning eight A100 GPUs. Every official vLLM and SGLang command in their hf model card targets an 8-GPU cluster for the full 262,144-token context window. That's great if you have a multi-GPU node sitting around. Most of us don't.</p>
+
+      <p>So I wanted to only use a single NVIDIA A100-SXM4-80GB. I wanted to know whether Qwen3.5-27B could actually serve real multimodal image-question requests on that one card not just load, but work. The answer turned out to be yes, with some important caveats though.</p>
+
+      <p>This post covers the full path: environment setup, the problems I hit, the launch configurations that worked, real GPU memory measurements, latency numbers, context scaling behavior, and a bit more.</p>
+
+      <hr>
+
+      <h2>Why This Matters</h2>
+
+      <p>Qwen3.5-27B is not a small model. At 27B parameters with a vision encoder, it uses early fusion training on multimodal tokens and features a hybrid architecture combining Gated Delta Networks with sparse attention. So Qwen has a native context length of 262,144 tokens, extensible up to 1,010,000 with YaRN. It scores competitively against GPT-5-mini and Claude Sonnet 4.5 across vision-language benchmarks.</p>
+
+      <p>The problem is that nearly every deployment example assumes you have multiple GPUs. If you're a researcher with a single rented A100-SXM4, an engineer prototyping a multimodal pipeline, or anyone who just wants to test this model without a cluster, the official docs leave you guessing.</p>
+
+      <p>I ran the experiment so you don't have to guess.</p>
+
+      <hr>
+
+      <h2>Hardware and Software</h2>
+
+      <table>
+        <tr><th>Component</th><th>Value</th></tr>
+        <tr><td>GPU</td><td>NVIDIA A100-SXM4-80GB (81,920 MiB)</td></tr>
+        <tr><td>Driver</td><td>580.126.09</td></tr>
+        <tr><td>CUDA</td><td>13.0</td></tr>
+        <tr><td>OS</td><td>Ubuntu, bare metal</td></tr>
+        <tr><td>Framework</td><td>vLLM nightly/dev build</td></tr>
+        <tr><td>Model</td><td>Qwen/Qwen3.5-27B</td></tr>
+        <tr><td>Precision</td><td>BF16</td></tr>
+        <tr><td>Attention backend</td><td>FlashAttention-2 (auto-enabled by vLLM)</td></tr>
+        <tr><td>API</td><td>OpenAI-compatible endpoint</td></tr>
+      </table>
+
+      <p>I did not use any PyTorch or CUDA Docker images,just bare Ubuntu. I set up the driver, CUDA, Python, vLLM, and everything else from scratch.</p>
+
+      <p>The nightly vLLM build was essential. Older stable releases failed with an error saying <code>Qwen3_5ForConditionalGeneration</code> was not a supported architecture. The Qwen model card now explicitly points users toward the latest vLLM recipe for Qwen3.5 support.</p>
+
+      <hr>
+
+      <h2>Setting Up the Environment</h2>
+
+      <p>Straightforward on paper, but a couple of traps will waste your time. Full path from bare Ubuntu.</p>
+
+      <p>Update the system and grab the basics:</p>
+
+      <pre><code class="language-bash">sudo apt update && sudo apt upgrade -y
+sudo apt install -y git wget curl build-essential python3 python3-pip python3-venv
+</code></pre>
+
+      <p>Run <code>nvidia-smi</code> and confirm the A100 shows up. Then spin up a venv — I keep LLM installs isolated:</p>
+
+      <pre><code class="language-bash">python3 -m venv qwen-env
+source qwen-env/bin/activate
+pip install --upgrade pip
+</code></pre>
+
+      <p>PyTorch next. For A100 I used the CUDA 12.1 wheels:</p>
+
+      <pre><code class="language-bash">pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+</code></pre>
+
+      <p>Quick sanity check that CUDA sees the GPU:</p>
+
+      <pre><code class="language-bash">python - &lt;&lt;'PY'
+import torch
+print("CUDA:", torch.cuda.is_available())
+print("GPU:", torch.cuda.get_device_name(0))
+PY
+</code></pre>
+
+      <p>vLLM needs the nightly build — stable won't work for Qwen3.5. Then the usual client libs:</p>
+
+      <pre><code class="language-bash">pip install vllm --extra-index-url https://wheels.vllm.ai/nightly
+pip install openai pillow transformers accelerate
+</code></pre>
+
+      <p>Install <code>python3-dev</code> and <code>build-essential</code> before your first vLLM launch. Without them, Triton bombs on kernel compilation because <code>Python.h</code> is missing. The error is opaque and easy to miss. Cost me half an hour.</p>
+
+      <pre><code class="language-bash">sudo apt install -y python3-dev python3-venv build-essential
+</code></pre>
+
+      <p>For gated models, <code>huggingface-cli login</code> (after <code>pip install huggingface_hub</code>).</p>
+
+      <p>First launch, use a small context so you don't hit OOM while the model is still loading:</p>
+
+      <pre><code class="language-bash">vllm serve Qwen/Qwen3.5-27B \
+  --port 8000 \
+  --tensor-parallel-size 1 \
+  --gpu-memory-utilization 0.90 \
+  --max-model-len 4096 \
+  --reasoning-parser qwen3
+</code></pre>
+
+      <p>First run downloads ~45–50GB, loads the vision encoder, builds the KV cache. Expect 2–5 minutes. When it's up you'll get <code>Uvicorn running on http://0.0.0.0:8000</code>. Hit <code>curl http://localhost:8000/v1/models</code> from another terminal to confirm the model is registered.</p>
+
+      <hr>
+
+      <h2>Launching with Full Context</h2>
+
+      <p>Once the basic launch works, you can bump <code>--max-model-len</code> to 262,144 for full context. The launch command follows the same pattern, except with <code>tensor-parallel-size 1</code>:</p>
+
+      <pre><code class="language-bash">vllm serve Qwen/Qwen3.5-27B \
+  --port 8000 \
+  --tensor-parallel-size 1 \
+  --gpu-memory-utilization 0.90 \
+  --max-model-len 262144 \
+  --reasoning-parser qwen3
+</code></pre>
+
+      <p>Two parameters that are easy to confuse:</p>
+
+      <ul>
+        <li><code>--max-model-len</code> is the total context budget (prompt plus output combined)</li>
+        <li><code>max_tokens</code> in the API request is just the generation length for one response</li>
+      </ul>
+
+      <p>Mixing these up is a common source of cryptic failures. The vLLM docs define <code>--max-model-len</code> as the full prompt-plus-output context length.</p>
+
+      <p>Once the server starts, it exposes an OpenAI-compatible endpoint at <code>http://localhost:8000/v1/chat/completions</code>.</p>
+
+      <hr>
+
+      <h2>What the GPU Memory Actually Looks Like</h2>
+
+      <p>This is the part the official docs don't give you for a single-GPU setup. From the vLLM server logs during the 262,144 context launch:</p>
+
+      <table>
+        <tr><th>Component</th><th>Memory</th></tr>
+        <tr><td>Model weights</td><td>51.1 GB</td></tr>
+        <tr><td>Available KV cache</td><td>18.3 GB</td></tr>
+        <tr><td>CUDA graph capture</td><td>~1 GB</td></tr>
+        <tr><td>Peak observed GPU usage</td><td>~74 GB</td></tr>
+      </table>
+
+      <p>That leaves roughly 6 GiB of headroom on the 81,920 MiB card. It's tight but stable. The runtime reported a KV cache capacity of 74,480 tokens — well under the configured 262,144 ceiling. This is an important distinction: the server initializes at the full context setting, but the KV cache can only physically hold about 74k tokens at once. I'll come back to why this matters.</p>
+
+      <hr>
+
+      <h2>Context Scaling: What Actually Launches</h2>
+
+      <p>I tested four context configurations, stopping and restarting the server each time. The benchmark script automated the full cycle: kill any existing server, launch with the new context, wait for the health check endpoint, then run real image-VQA requests.</p>
+
+      <table>
+        <tr><th>Configured context</th><th>Server started</th><th>Real multimodal requests succeeded</th></tr>
+        <tr><td>4,096</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td>65,536</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td>131,072</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td>262,144</td><td>Yes</td><td>Yes</td></tr>
+      </table>
+
+      <p>All four configurations launched cleanly and served real image requests. This was a stronger result than I expected. The official examples don't suggest this is possible on a single card.</p>
+
+      <hr>
+
+      <h2>Latency Numbers</h2>
+
+      <p>I measured both warmup and steady-state latency across a few food images.</p>
+
+      <table>
+        <tr><th>Scenario</th><th>Latency</th></tr>
+        <tr><td>warmup request (includes graph compilation)</td><td>~20 seconds</td></tr>
+        <tr><td>Steady-state requests</td><td>~0.45 seconds per image</td></tr>
+      </table>
+
+      <p>The warmup start is dominated by CUDA graph compilation and model warmup. Once that's done, multimodal inference is fast. For a 27B-parameter model doing vision-language reasoning on a single GPU, sub-500ms per image is quite usable.</p>
+
+      <p>From the vLLM runtime logs, prompt throughput was approximately 286 tokens per second, with generation throughput in the range of 1.6–4 tokens per second depending on request timing and prompt length.</p>
+
+      <hr>
+
+      <h2>Long-Context Stress Test</h2>
+
+      <p>Launching at a given context setting is not the same as actually using that much context. To test this, I sent increasingly long text prefixes (a repeated sentence, thousands of times) alongside an image, and asked the model to describe the food in the image.</p>
+
+      <table>
+        <tr><th>Context setting</th><th>Prompt size</th><th>Success</th><th>Latency</th></tr>
+        <tr><td>4,096</td><td>large</td><td>No</td><td>exceeds limit</td></tr>
+        <tr><td>65,536</td><td>medium (~2k repeats)</td><td>Yes</td><td>5.1 s</td></tr>
+        <tr><td>65,536</td><td>very large (~8k repeats)</td><td>Yes</td><td>18.6 s</td></tr>
+        <tr><td>65,536</td><td>extremely large (~16k repeats)</td><td>No</td><td>exceeds limit</td></tr>
+        <tr><td>131,072</td><td>extremely large</td><td>Yes</td><td>44.7 s</td></tr>
+        <tr><td>262,144</td><td>extremely large</td><td>Yes</td><td>44.8 s</td></tr>
+      </table>
+
+      <p>The results confirm what you'd expect: requests that fit within the configured context succeed, and latency scales with input length. The server handles genuinely long multimodal prompts correctly at higher context settings.</p>
+
+
+
+
+      <hr>
+
+      <h2>Lessons</h2>
+
+      <p>Three things will save you time:</p>
+
+      <p><strong>Use a nightly vLLM build.</strong> The stable release at the time of writing does not support <code>Qwen3_5ForConditionalGeneration</code>. The model card points to the latest vLLM path for a reason.</p>
+
+      <p><strong>Install python3-dev before launching.</strong> The missing <code>Python.h</code> error during Triton compilation is not intuitive, and it happens after you've already waited for the model to download.</p>
+
+      <p><strong>Separate "server configured at X" from "I ran an X-token request."</strong> The server can initialize at 262,144 context, but the KV cache on a single A100-SXM4-80GB physically holds about 74k tokens. Requests exceeding that will queue or fail at runtime. This distinction matters when making claims about long-context capability.</p>
+
+      <hr>
+
+      <h2>Conclusion</h2>
+
+      <p>A single A100-SXM4-80GB can load the model, initialize at the full 262k context configuration, serve real image-VQA requests with sub-500ms steady-state latency, and handle long multimodal prompts at higher context settings. The total GPU memory footprint peaks around 74 GB, leaving a workable margin.</p>
+
+      <p>The most interesting takeaway isn't about hardware at all. It's that long text prefixes measurably degrade multimodal grounding, even when the request fits within the context budget. For anyone building multimodal applications, this means context management isn't just a memory problem, it's a quality problem. Well, I'm not sure but I guess so lol.</p>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="../javascripts/nav.js"></script>
+</body>
+</html>

@@ -254,7 +254,7 @@ pip install openai pillow transformers accelerate
 
       <p><strong>Install python3-dev before launching.</strong> The missing <code>Python.h</code> error during Triton compilation is not intuitive, and it happens after you've already waited for the model to download.</p>
 
-      <p><strong>Separate "server configured at X" from "I ran an X-token request."</strong> The server can initialize at 262,144 context, but the KV cache on a single A100-SXM4-80GB physically holds about 74k tokens. Requests exceeding that will queue or fail at runtime. This distinction matters when making claims about long-context capability.</p>
+      <p> The server can initialize at 262,144 context, but the KV cache on a single A100-SXM4-80GB physically holds about 74k tokens. Requests exceeding that will queue or fail at runtime. This distinction matters when making claims about long-context capability.</p>
 
       <hr>
 

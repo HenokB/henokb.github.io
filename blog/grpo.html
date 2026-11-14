@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>What Does GRPO Actually Optimize? - Henok Biadglign Ademtew</title>
+  <meta name="description" content="From policy gradients to group-relative advantages: what GRPO optimizes, and why reward normalization matters for language models." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../stylesheets/main.css">
+  <style>
+    .blog-content { line-height: 1.8; }
+    .blog-content h1 { font-size: 32px; font-weight: 500; line-height: 1.3; margin: 0 0 24px 0; color: #1a1a1a; letter-spacing: -0.5px; }
+    .blog-content h2 { font-size: 24px; font-weight: 500; text-transform: none; letter-spacing: -0.3px; margin: 48px 0 20px 0; color: #1a1a1a; border-bottom: none; padding-bottom: 0; }
+    .blog-content h3 { font-size: 20px; font-weight: 500; margin: 32px 0 12px 0; color: #1a1a1a; letter-spacing: -0.2px; }
+    .blog-content h4 { font-size: 18px; font-weight: 500; margin: 24px 0 10px 0; color: #1a1a1a; }
+    .blog-content p { margin: 0 0 16px 0; color: #4a5568; font-size: 17px; line-height: 1.75; }
+    .blog-content strong { font-weight: 600; color: #1a1a1a; }
+    .blog-content em { font-style: italic; }
+    .blog-content hr { border: none; border-top: 1px solid #e8e8e8; margin: 32px 0; }
+    .blog-content pre, .blog-content code { font-family: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace; font-size: 14px; line-height: 1.6; }
+    .blog-content pre { background: #f5f5f5; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #e8e8e8; }
+    .blog-content pre code { background: transparent; padding: 0; border: none; color: #1a1a1a; font-size: 14px; }
+    .blog-content code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 15px; border: 1px solid #e8e8e8; color: #d63384; }
+    .blog-content ul, .blog-content ol { margin: 16px 0; padding-left: 24px; color: #4a5568; }
+    .blog-content li { margin-bottom: 8px; line-height: 1.7; }
+    .blog-content a { color: #2563eb; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s ease; }
+    .blog-content a:hover { color: #1d4ed8; border-bottom-color: #2563eb; }
+    .blog-content table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 15px; }
+    .blog-content table th, .blog-content table td { padding: 12px; text-align: left; border: 1px solid #e8e8e8; }
+    .blog-content table th { background: #f5f5f5; font-weight: 500; color: #1a1a1a; }
+    .blog-content table td { color: #4a5568; }
+    .blog-content table tr:nth-child(even) { background: #fafafa; }
+    .blog-content figure { margin: 28px 0; }
+    .blog-content figure img { width: 100%; height: auto; display: block; border: 1px solid #e8e8e8; border-radius: 6px; background: #fafafa; }
+    .blog-content figure img + img { margin-top: 16px; }
+    .blog-content figcaption { margin-top: 10px; font-size: 14px; line-height: 1.6; color: #6b7280; }
+    .blog-content .equation { overflow-x: auto; margin: 20px 0; padding: 8px 4px; }
+    .blog-content .byline { margin-top: -8px; margin-bottom: 28px; font-size: 15px; color: #6b7280; }
+    .back-link { display: inline-block; margin-bottom: 32px; font-size: 15px; color: #4a5568; }
+    .back-link:hover { color: #2563eb; }
+  </style>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      svg: { fontCache: 'local' },
+      options: { enableMenu: false }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../pages/research.html">Research</a></li>
+        <li><a href="../pages/code.html">Code</a></li>
+        <li><a href="../pages/misc.html">Misc</a></li>
+      </ul>
+    </nav>
+
+    <div class="blog-content">
+      <h1>What Does GRPO Actually Optimize?</h1>
+      <p><a href="../pages/misc.html" class="back-link">← Back to Misc</a></p>
+      <p class="byline">November 2026</p>
+
+<p>Imagine two translation prompts. On the first, the four translations are almost the same. On the second, they run from wrong to good. After normalization, the almost-same prompt can still get order-one learning weights. The raw scores dropped out. Why?</p>
+
+<p>The usual explanation is: sample a few answers, score them, and upweight the better ones. That skips the step that changes the update. After you subtract the group mean and divide by the group&#x27;s spread, &quot;better&quot; doesn&#x27;t mean a higher raw score. It means higher than the other samples from the same prompt, measured in that prompt&#x27;s own units.</p>
+
+<p>Multiply every score by ten, or add the same constant to all of them, and the normalized update doesn&#x27;t move. Change the gaps between scores, and it does. A KL penalty is a separate choice. I want to take those pieces apart before putting them back together.</p>
+
+<p>GRPO optimizes a clipped surrogate built from relative rewards, often with a penalty for moving away from a reference policy. The expected update doesn&#x27;t generally equal the gradient of the original average reward. Normalization is one reason.</p>
+
+<h2>1. Start with the reward we actually want</h2>
+
+<p>The objective is only &quot;get a higher score on average.&quot; The annoying part is that the translation is a sample, so you can&#x27;t backpropagate through the words.</p>
+
+<p>Let \(x\) be a source sentence together with the translation instruction, and let \(y\) be a complete translation sampled from a policy \(\pi_\theta(y\mid x)\). Assume prompts come from a fixed distribution \(d(x)\) and the reward function \(R(x,y)\) is fixed during the policy update. Our starting objective is</p>
+
+<div class="equation">\[J(\theta)=\mathbb E_{x\sim d}\mathbb E_{y\sim\pi_\theta(\cdot\mid x)}[R(x,y)].\]</div>
+
+<p>For translation, the reward might come from a quality estimator, a reference-based metric, or a combination of checks. The objective above only says that we want a higher expected score. Whether that score captures translation quality is a separate question.</p>
+
+<p>The difficulty is that generating a translation involves sampling discrete tokens. We can&#x27;t backpropagate through the sampled sentence in the usual way. The reward may also be non-differentiable.</p>
+
+<p>The policy gradient avoids both problems by differentiating the probability of the translation. For one fixed prompt, write \(J_x(\theta)=\sum_y\pi_\theta(y\mid x)R(x,y)\). Then</p>
+
+<div class="equation">\[\begin{aligned}
+\nabla_\theta J_x(\theta)
+&amp;=\sum_y R(x,y)\nabla_\theta\pi_\theta(y\mid x)\\
+&amp;=\sum_y\pi_\theta(y\mid x)R(x,y)\nabla_\theta\log\pi_\theta(y\mid x)\\
+&amp;=\mathbb E_y[R(x,y)\nabla_\theta\log\pi_\theta(y\mid x)].
+\end{aligned}\]</div>
+
+<p>This is the score-function identity behind REINFORCE. We differentiate the model’s log-probability and use the reward as a weight. We don&#x27;t need a derivative of the reward with respect to the sampled tokens.</p>
+
+<p>For an autoregressive model,</p>
+
+<div class="equation">\[\log\pi_\theta(y\mid x)=\sum_{t=1}^{T}\log\pi_\theta(y_t\mid x,y_{&lt;t}).\]</div>
+
+<p>So a sequence-level reward can weight the log-probability gradients of all tokens in the translation. This gives a learning signal, although it doesn&#x27;t tell us which particular word caused the translation to receive a low score.</p>
+
+<h2>2. A baseline changes the estimator</h2>
+
+<p>A raw reward pushes every sample the same way, only harder or softer. A baseline asks something else: was this translation better than usual for this prompt?</p>
+
+<p>Raw rewards can produce a noisy gradient estimate. A common solution is to subtract a baseline \(b(x)\) that doesn&#x27;t depend on the sampled translation:</p>
+
+<div class="equation">\[\nabla_\theta J_x
+=\mathbb E_y[(R(x,y)-b(x))\nabla_\theta\log\pi_\theta(y\mid x)].\]</div>
+
+<p>Why can we do this? Because the extra term has expectation zero:</p>
+
+<div class="equation">\[\mathbb E_y[b(x)\nabla_\theta\log\pi_\theta(y\mid x)]
+=b(x)\nabla_\theta\sum_y\pi_\theta(y\mid x)=0.\]</div>
+
+<p>A suitable baseline can reduce variance without changing the expected gradient. It changes the reference point: a translation gets a positive weight when it scores above the baseline and a negative weight when it scores below it. The baseline is treated as fixed when computing this policy gradient, even if another model estimates it.</p>
+
+<p>The expected reward is a natural baseline, but it isn&#x27;t always the variance-minimizing one. For a scalar baseline minimizing the gradient estimator’s total variance, the optimum also depends on the squared norm of the log-probability gradient. “Subtract the mean” is useful; it isn&#x27;t a general proof of minimum variance.</p>
+
+<h3>The sample mean needs a small qualification</h3>
+
+<p>What happens when an answer helps set the baseline it is judged against?</p>
+
+<p>Suppose we draw \(G\) independent translations for one prompt and use their mean reward \(\bar r\) as the baseline. Let \(s_i=\nabla_\theta\log\pi_\theta(y_i\mid x)\). Since \(r_i\) contributes to its own baseline,</p>
+
+<div class="equation">\[\mathbb E\left[\frac1G\sum_{i=1}^G(r_i-\bar r)s_i\right]
+=\left(1-\frac1G\right)\nabla_\theta J_x.\]</div>
+
+<p>The cross-sample terms vanish by independence; the self-term removes \(1/G\) of the gradient. With fixed \(G\), this is a constant shrinkage, so it preserves the expected direction. It still matters for step size and for the balance against a separately added KL penalty.</p>
+
+<p>A leave-one-out baseline removes this issue:</p>
+
+<div class="equation">\[b_{-i}=\frac1{G-1}\sum_{j\ne i}r_j,
+\qquad
+r_i-b_{-i}=\frac G{G-1}(r_i-\bar r).\]</div>
+
+<p>Before any standard-deviation normalization, this recovers an unbiased estimator under the assumptions above. Once we divide by a random group standard deviation, this simple correction is no longer enough.</p>
+
+<h2>3. What group normalization keeps and removes</h2>
+
+<p>Divide by the group&#x27;s standard deviation and two prompts can get the same update: one where every translation is bad, and one where every translation is good. What remains is the spacing inside the group, not the absolute scores.</p>
+
+<p>GRPO replaces a learned critic with information from multiple responses to the same prompt. In the outcome-reward setting, it assigns a group-relative advantage to each response. This construction was introduced in <a href="https://arxiv.org/html/2402.03300v3#S4.SS1" target="_blank" rel="noopener">DeepSeekMath, Section 4.1</a>.</p>
+
+<p>For this post, use the population standard deviation within the group:</p>
+
+<div class="equation">\[\bar r=\frac1G\sum_i r_i,\qquad
+s_r=\sqrt{\frac1G\sum_i(r_i-\bar r)^2},\qquad
+\hat A_i=\frac{r_i-\bar r}{s_r+\varepsilon}.\]</div>
+
+<p>Here \(\varepsilon\) is a small numerical stabilizer. Some implementations use a different standard-deviation convention or put the stabilizer inside the square root. Those details change the exact constants, so they should be stated when comparing results.</p>
+
+<p>Consider rewards \([0.1,0.2,0.4,0.9]\). Their mean is \(0.4\), their standard deviation is about \(0.308\), and their normalized advantages are approximately \([-0.973,-0.649,0,1.622]\) when \(\varepsilon\) is negligible. The best translation is encouraged. The two below-average translations are discouraged. The translation exactly at the mean contributes no reward gradient.</p>
+
+<figure><img src="figures/01-normalization.svg" alt="Two plots showing that a positive affine reward transformation leaves normalized advantages unchanged, while a nonlinear transformation changes them."><figcaption>Figure 1. A shift or a positive scale leaves the normalized advantages unchanged. \(r^4\) keeps the ranking and changes them. \(G=4\), \(\varepsilon=0\).</figcaption></figure>
+
+<p>For any positive scale \(a\) and prompt-dependent shift \(b\), applied equally to every response in a group,</p>
+
+<div class="equation">\[r_i&#x27;=ar_i+b
+\quad\Longrightarrow\quad
+\hat A_i&#x27;=\frac{a(r_i-\bar r)}{as_r+\varepsilon}
+=\frac{r_i-\bar r}{s_r+\varepsilon/a}.\]</div>
+
+<p>With \(\varepsilon=0\), the advantages are unchanged. This remains true if each prompt has its own positive scale. GRPO therefore removes absolute reward offsets and units within a prompt. A group of uniformly poor translations can produce the same advantages as a group of good translations with the same relative spacing.</p>
+
+<p>This doesn&#x27;t make GRPO purely rank-based for general \(G\). A nonlinear transformation can change the distances between scores, and therefore the normalized advantages, even when it preserves every ranking. With a non-negligible \(\varepsilon\), even positive scaling is no longer exactly invariant.</p>
+
+<p>There is also a useful distinction between <strong>zero variation</strong> and <strong>small variation</strong>. If every reward is identical, all advantages are zero. But when the scores differ slightly and \(s_r\) is still much larger than \(\varepsilon\), normalization can turn those small differences into order-one weights. If those differences mostly come from measurement noise, the algorithm will still act on them.</p>
+
+<h3>The update also changes across prompts</h3>
+
+<p>Let \(\mu_x(\theta)\) and \(\sigma_x(\theta)\) be the population reward mean and standard deviation for prompt \(x\). In the large-group limit, with negligible \(\varepsilon\), no clipping or length weighting, and \(\sigma_x&gt;0\), the expected reward update approaches</p>
+
+<div class="equation">\[g(\theta)\approx
+\mathbb E_{x\sim d}\left[\frac1{\sigma_x(\theta)}\nabla_\theta\mu_x(\theta)\right].\]</div>
+
+<p>Compared with the raw expected-reward gradient, each prompt’s contribution is multiplied by its inverse reward standard deviation. This doesn&#x27;t mean that every low-variance prompt produces a larger update in absolute terms: its unnormalized gradient can also be small. It means the <em>relative weighting</em> has changed.</p>
+
+<p>The distinction matters when parameters are shared across prompts. Their gradients can point in different directions, so changing their weights can change the combined direction. Also, this expression is generally not the gradient of \(\mathbb E_x[\mu_x/\sigma_x]\): that derivative would include a term involving \(\nabla_\theta\sigma_x\).</p>
+
+<p>In practice, the sampled advantages are held fixed during each update. GRPO optimizes a local surrogate built from those values. It doesn&#x27;t maximize the average freshly normalized reward; that average is zero within every group by construction.</p>
+
+<h2>4. The full objective adds more choices</h2>
+
+<p>The gradient above is the on-policy core. The loss people train has extra switches on top of it: an old policy, a probability ratio, clipping, averaging over tokens, and usually a KL term. Each switch changes what &quot;the GRPO update&quot; means.</p>
+
+<p>So far, we have considered an on-policy reward gradient. Practical GRPO also uses a policy snapshot \(\pi_{\mathrm{old}}\) to generate responses, a probability ratio, clipping, and often a reference-policy penalty.</p>
+
+<p>For token \(t\) of response \(i\), define</p>
+
+<div class="equation">\[\rho_{i,t}(\theta)=
+\frac{\pi_\theta(y_{i,t}\mid x,y_{i,&lt;t})}
+{\pi_{\mathrm{old}}(y_{i,t}\mid x,y_{i,&lt;t})}.\]</div>
+
+<p>A common token-averaged GRPO surrogate is</p>
+
+<div class="equation">\[L_{\mathrm{GRPO}}(\theta)=
+\mathbb E_{x,\,y_{1:G}\sim\pi_{\mathrm{old}}}
+\left[\frac1G\sum_{i=1}^G\frac1{T_i}
+\sum_{t=1}^{T_i}
+\left(\ell_{i,t}(\theta)-\beta\widehat K_{i,t}(\theta)\right)\right],\]</div>
+
+<div class="equation">\[\ell_{i,t}(\theta)=\min\left\{
+\rho_{i,t}\hat A_i,\;
+\operatorname{clip}(\rho_{i,t},1-\delta,1+\delta)\hat A_i
+\right\}.\]</div>
+
+<p>We maximize this expression, or minimize its negative. The advantages and old policy are fixed while optimizing the sampled batch. Here \(\delta\) is the clipping threshold, distinct from the numerical stabilizer \(\varepsilon\), and \(\widehat K\) denotes the implementation’s token-level KL estimate. This is the structure of the <a href="https://arxiv.org/html/2402.03300v3#S4.SS1" target="_blank" rel="noopener">original GRPO surrogate</a>, rather than a specification of every later variant.</p>
+
+<p>The ratio lets the update compare the current policy with the policy that generated the data. At \(\theta=\theta_{\mathrm{old}}\), its gradient gives the usual log-probability gradient. After several updates, token ratios aren&#x27;t a full sequence-level importance correction: the prefix distribution has changed too. The expression is a surrogate, not an exact rewriting of \(J\) for arbitrary policy changes.</p>
+
+<p>Clipping limits the objective’s incentive to keep moving a sampled token in the favored direction once its ratio passes the threshold. It doesn&#x27;t impose a hard bound on the entire policy’s KL divergence. This distinction comes from the <a href="https://arxiv.org/abs/1707.06347" target="_blank" rel="noopener">PPO clipped objective</a>.</p>
+
+<p>The factor \(1/T_i\) also matters. The original sequence policy gradient sums token gradients. Averaging them gives a response-length-dependent weight. Changing this denominator can therefore change optimization, particularly when different languages have different token lengths for comparable content.</p>
+
+<figure><img src="figures/liu-figure4.svg" alt="Paper diagram showing prompt weights determined by reward standard deviation and token weights determined by response length."><figcaption>Figure 2. Blue is the prompt weight: one over the reward spread, so a tight group gets a larger update. Orange is the token weight: one over the answer length, so a short answer counts more per token.</figcaption></figure>
+
+<p><a href="https://arxiv.org/abs/2503.20783v2" target="_blank" rel="noopener">Understanding R1-Zero-Like Training</a> analyzes both weights and proposes Dr. GRPO, which removes the reward-spread weight and replaces the per-answer length weight with a constant. Their reasoning experiments show that these choices affect training. They don&#x27;t establish which choice is best for multilingual translation.</p>
+
+<h3>The reference policy serves a different purpose</h3>
+
+<p>The old policy supplies the rollout distribution. The reference policy \(\pi_{\mathrm{ref}}\) supplies an anchor, often the checkpoint before RL training. These are different roles.</p>
+
+<p>To understand the penalty, consider the idealized sequence-level objective</p>
+
+<div class="equation">\[J_\beta(\theta)=\mathbb E_x\left[
+\mathbb E_{y\sim\pi_\theta}R(x,y)
+-\beta D_{\mathrm{KL}}\big(\pi_\theta(\cdot\mid x)\Vert\pi_{\mathrm{ref}}(\cdot\mid x)\big)
+\right].\]</div>
+
+<p>For an unrestricted distribution over responses, positive reference support, and \(\beta&gt;0\), its optimum is</p>
+
+<div class="equation">\[\pi^*(y\mid x)=\frac{1}{Z(x)}\pi_{\mathrm{ref}}(y\mid x)
+\exp\left(\frac{R(x,y)}{\beta}\right).\]</div>
+
+<p>We get this by adding a normalization constraint and setting the derivative with respect to each response probability to zero. Higher rewards tilt the distribution away from the reference; larger \(\beta\) resists that change.</p>
+
+<p>Under this raw-reward objective, replacing \(R\) with \(aR\) while holding \(\beta\) fixed changes the reward–KL tradeoff. To preserve the optimum, we would scale \(\beta\) by \(a\) as well. Under group-normalized GRPO, however, positive affine reward scaling cancels when \(\varepsilon\) is negligible. The reward surrogate then stays the same, so there is no corresponding need to rescale \(\beta\) solely because the reward units changed.</p>
+
+<h2>5. Why two responses are an interesting special case</h2>
+
+<p>With two samples, the size of the score gap drops out. The update just pushes one translation up and the other down. That looks like DPO. It isn&#x27;t the same loss.</p>
+
+<p>With \(G=2\), unequal rewards, population standard deviation, and \(\varepsilon=0\), the advantages are simply \(+1\) and \(-1\). The size of the reward gap disappears. Equal rewards give zero advantages, using the zero-variance convention.</p>
+
+<p>Ignoring clipping, length weighting, and KL, one on-policy update from a winning–losing pair is proportional to</p>
+
+<div class="equation">\[\nabla_\theta\log\pi_\theta(y_+\mid x)
+-\nabla_\theta\log\pi_\theta(y_-\mid x).\]</div>
+
+<p>This helps explain the connection developed by Wu et al. in <a href="https://arxiv.org/html/2510.00977v1" target="_blank" rel="noopener">It Takes Two: Your GRPO Is Secretly DPO</a>. The comparison has a preference-learning structure: encourage one response and discourage another.</p>
+
+<p>But the objectives aren&#x27;t identical. <a href="https://arxiv.org/abs/2305.18290" target="_blank" rel="noopener">DPO</a> uses a logistic loss on a reference-adjusted log-probability margin. Its gradient contains a margin-dependent weight. Standard offline DPO also trains on an existing preference dataset, while GRPO generates responses from a changing policy. A shared pairwise direction doesn&#x27;t remove these differences.</p>
+
+<p>The binary-reward case is especially useful. Let a response succeed with probability \(p\). For two independent responses,</p>
+
+<div class="equation">\[\mathbb E[\hat A_i\mid r_i]=r_i-p,\]</div>
+
+<p>because a successful response gets advantage \(+1\) only when its partner fails, while a failed response gets \(-1\) only when its partner succeeds. Under the simplified on-policy sequence estimator, this recovers the raw binary-reward gradient in expectation. It isn&#x27;t a general unbiasedness result for continuous rewards, token averaging, clipping, or repeated off-policy updates.</p>
+
+<p>The group must contain different outcomes to supply a reward signal. For binary rewards,</p>
+
+<div class="equation">\[P(\text{mixed group})=1-p^G-(1-p)^G.\]</div>
+
+<p>At \(p=0.01\), this probability is about \(1.98\%\) for \(G=2\) and \(14.85\%\) for \(G=16\). But the larger group also costs eight times as many responses. A per-group comparison alone doesn&#x27;t settle efficiency at a fixed rollout budget.</p>
+
+<figure><img src="figures/03-group-size.svg" alt="Analytical curves showing how group size changes the probability of mixed binary rewards and the expected gradient."><figcaption>Figure 3. Binary rewards. Left: chance the group is mixed. Right: expected gradient, ties included. Bigger groups change the update, not only the estimate.</figcaption></figure>
+
+<p>This also shows why larger groups do more than improve a statistical estimate. They can change the expected update. Dropping tied groups and then averaging only over the surviving groups changes it again, by conditioning training on receiving a nonzero signal.</p>
+
+<figure><img src="figures/wu-figure1a.svg" alt="Published reward curve for Qwen-1.5B comparing group sizes two and sixteen."><img src="figures/wu-figure1b.svg" alt="Published validation-score curve for Qwen-1.5B comparing group sizes two and sixteen."><figcaption>Figure 4. Qwen-1.5B trained on MATH. Top: training reward. Bottom: validation score. Group size 2 versus 16. Not the toy run below.</figcaption></figure>
+
+<p>The paper reports competitive results with two responses and lower training cost in its tested settings. One reporting detail needs clarification: the figure’s axes are labeled in minutes and extend to roughly 30,000, whereas Table 1 lists much shorter training times in hours. I would use these plots to inspect the reported learning trends, rather than calculate a speedup from the axes. The reasoning results also leave open how well the same group size works with continuous translation rewards.</p>
+
+<h2>6. A small translation-selection experiment</h2>
+
+<p>The math says normalization throws away scale. I checked that on a tiny selection problem, not on a language model. There is no shared network and no generated text, only four fixed answers per prompt.</p>
+
+<p>To isolate reward normalization, I use a deliberately small setup. Each of four source sentences has four fixed candidate translations. Two prompts translate into French and two into Spanish. Each prompt has its own categorical policy over the candidates, initialized uniformly. There is no pretrained language model and no parameter sharing between prompts.</p>
+
+<p>The candidates receive constructed quality scores \(r\in\{0,0.35,0.70,1\}\). These are illustrative labels, not human annotations or scores from a translation metric. For example:</p>
+
+<table><thead><tr><th>Source: “The train leaves at six.”</th><th>Assigned quality</th></tr></thead><tbody><tr><td>Le jardin est vert.</td><td>0.00</td></tr><tr><td>Le train arrive à six heures.</td><td>0.35</td></tr><tr><td>Le train part.</td><td>0.70</td></tr><tr><td>Le train part à six heures.</td><td>1.00</td></tr></tbody></table>
+
+<p>The experiment compares four reward functions: \(r\), \(10r+3\), \(r^4\), and \(10^{-9}r\). All preserve the candidate ranking. The last deliberately makes reward variation smaller than the numerical stabilizer.</p>
+
+<p>For each prompt, each update samples \(G=8\) responses. I compare group-normalized advantages with mean subtraction alone, keeping the same samples’ random-number streams across conditions. Both use SGD, learning rate \(0.3\), an exact categorical KL penalty to the uniform reference with \(\beta=0.05\), and 400 updates. The normalized condition uses \(\varepsilon=10^{-8}\) outside the square root. Results cover 40 seeds, numbered 0–39.</p>
+
+<p>There is one gradient step per fresh batch. Thus the probability ratios are one when the gradient is evaluated, and clipping is inactive. Each complete candidate is treated as one action, so token-length effects are absent. This tests the on-policy core of the GRPO update, rather than a full LLM training pipeline.</p>
+
+<figure><img src="figures/05-experiment.svg" alt="Learning curves for normalized and mean-centered updates under four reward transformations."><figcaption>Figure 5. Quality on the original scores. Line: mean over 40 seeds. Shade: one standard deviation. Several normalized runs overlap.</figcaption></figure>
+
+<table><thead><tr><th>Training reward</th><th>Group-normalized: final quality</th><th>Mean subtraction only: final quality</th></tr></thead><tbody><tr><td>\(r\)</td><td>0.9921 ± 0.0005</td><td>0.9323 ± 0.0016</td></tr><tr><td>\(10r+3\)</td><td>0.9921 ± 0.0005</td><td>0.9967 ± 0.0003</td></tr><tr><td>\(r^4\)</td><td>0.9918 ± 0.0006</td><td>0.9642 ± 0.0013</td></tr><tr><td>\(10^{-9}r\)</td><td>0.5853 ± 0.0007</td><td>0.5125 ± &lt;0.0001</td></tr></tbody></table>
+
+<p><em>Mean ± sample standard deviation across seeds, after 400 updates. Initial expected quality is 0.5125.</em></p>
+
+<p>Three observations stand out. First, normalized training with \(r\) and \(10r+3\) follows effectively the same trajectory. Across all recorded steps and seeds, the largest absolute quality difference is below \(9\times10^{-9}\). Repeating the comparison with \(\varepsilon=0\) matches within numerical tolerance.</p>
+
+<p>Second, the nonlinear reward changes the advantages, although its effect on the normalized learning curve is modest in this particular setup. This is a useful limit on the result: changing the update doesn&#x27;t imply a large practical difference in every task.</p>
+
+<p>Third, shrinking rewards below \(\varepsilon\) substantially weakens normalized learning. With mean subtraction alone, scaling matters directly: \(10r+3\) changes both the size of the reward gradient and its balance against the fixed KL penalty. The additive constant disappears, but the multiplier remains.</p>
+
+<p>The normalized method’s higher score here isn&#x27;t evidence that it is universally better. The comparison uses one shared learning rate and KL coefficient, rather than tuning each method. The policies also select from four fixed answers instead of generating new translations.</p>
+
+<hr>
+
+<p><strong>Sources.</strong></p>
+
+<ul><li><a href="https://arxiv.org/abs/2402.03300v3" target="_blank" rel="noopener">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>.</li><li><a href="https://arxiv.org/abs/1707.06347" target="_blank" rel="noopener">Proximal Policy Optimization Algorithms</a>.</li><li><a href="https://arxiv.org/abs/2305.18290" target="_blank" rel="noopener">Direct Preference Optimization: Your Language Model is Secretly a Reward Model</a>.</li><li><a href="https://arxiv.org/abs/2503.20783v2" target="_blank" rel="noopener">Understanding R1-Zero-Like Training: A Critical Perspective</a>.</li><li><a href="https://arxiv.org/abs/2510.00977v1" target="_blank" rel="noopener">It Takes Two: Your GRPO Is Secretly DPO</a>.</li></ul>
+
+    </div>
+  </div>
+  <script src="../javascripts/nav.js"></script>
+</body>
+</html>

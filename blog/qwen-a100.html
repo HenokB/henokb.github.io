@@ -65,7 +65,7 @@
 
       <h2>Why This Matters</h2>
 
-      <p>Qwen3.5-27B is not a small model. At 27B parameters with a vision encoder, it uses early fusion training on multimodal tokens and features a hybrid architecture combining Gated Delta Networks with sparse attention. So Qwen has a native context length of 262,144 tokens, extensible up to 1,010,000 with YaRN. It scores competitively against GPT-5-mini and Claude Sonnet 4.5 across vision-language benchmarks.</p>
+      <p>Qwen3.5-27B isn't a small model. At 27B parameters with a vision encoder, it uses early fusion training on multimodal tokens and features a hybrid architecture combining Gated Delta Networks with sparse attention. So Qwen has a native context length of 262,144 tokens, extensible up to 1,010,000 with YaRN. It scores competitively against GPT-5-mini and Claude Sonnet 4.5 across vision-language benchmarks.</p>
 
       <p>The problem is that nearly every deployment example assumes you have multiple GPUs. If you're a researcher with a single rented A100-SXM4, an engineer prototyping a multimodal pipeline, or anyone who just wants to test this model without a cluster, the official docs leave you guessing.</p>
 
@@ -88,9 +88,9 @@
         <tr><td>API</td><td>OpenAI-compatible endpoint</td></tr>
       </table>
 
-      <p>I did not use any PyTorch or CUDA Docker images,just bare Ubuntu. I set up the driver, CUDA, Python, vLLM, and everything else from scratch.</p>
+      <p>I didn't use any PyTorch or CUDA Docker images,just bare Ubuntu. I set up the driver, CUDA, Python, vLLM, and everything else from scratch.</p>
 
-      <p>The nightly vLLM build was essential. Older stable releases failed with an error saying <code>Qwen3_5ForConditionalGeneration</code> was not a supported architecture. The Qwen model card now explicitly points users toward the latest vLLM recipe for Qwen3.5 support.</p>
+      <p>The nightly vLLM build was essential. Older stable releases failed with an error saying <code>Qwen3_5ForConditionalGeneration</code> wasn't a supported architecture. The Qwen model card now explicitly points users toward the latest vLLM recipe for Qwen3.5 support.</p>
 
       <hr>
 
@@ -104,7 +104,7 @@
 sudo apt install -y git wget curl build-essential python3 python3-pip python3-venv
 </code></pre>
 
-      <p>Run <code>nvidia-smi</code> and confirm the A100 shows up. Then spin up a venv — I keep LLM installs isolated:</p>
+      <p>Run <code>nvidia-smi</code> and confirm the A100 shows up. Then spin up a venv. I keep LLM installs isolated:</p>
 
       <pre><code class="language-bash">python3 -m venv qwen-env
 source qwen-env/bin/activate
@@ -125,7 +125,7 @@ print("GPU:", torch.cuda.get_device_name(0))
 PY
 </code></pre>
 
-      <p>vLLM needs the nightly build — stable won't work for Qwen3.5. Then the usual client libs:</p>
+      <p>vLLM needs the nightly build. Stable won't work for Qwen3.5. Then the usual client libs:</p>
 
       <pre><code class="language-bash">pip install vllm --extra-index-url https://wheels.vllm.ai/nightly
 pip install openai pillow transformers accelerate
@@ -189,7 +189,7 @@ pip install openai pillow transformers accelerate
         <tr><td>Peak observed GPU usage</td><td>~74 GB</td></tr>
       </table>
 
-      <p>That leaves roughly 6 GiB of headroom on the 81,920 MiB card. It's tight but stable. The runtime reported a KV cache capacity of 74,480 tokens — well under the configured 262,144 ceiling. This is an important distinction: the server initializes at the full context setting, but the KV cache can only physically hold about 74k tokens at once. I'll come back to why this matters.</p>
+      <p>That leaves roughly 6 GiB of headroom on the 81,920 MiB card. It's tight but stable. The runtime reported a KV cache capacity of 74,480 tokens, well under the configured 262,144 ceiling. This is an important distinction: the server initializes at the full context setting, but the KV cache can only physically hold about 74k tokens at once. I'll come back to why this matters.</p>
 
       <hr>
 
@@ -227,7 +227,7 @@ pip install openai pillow transformers accelerate
 
       <h2>Long-Context Stress Test</h2>
 
-      <p>Launching at a given context setting is not the same as actually using that much context. To test this, I sent increasingly long text prefixes (a repeated sentence, thousands of times) alongside an image, and asked the model to describe the food in the image.</p>
+      <p>Launching at a given context setting isn't the same as actually using that much context. To test this, I sent increasingly long text prefixes (a repeated sentence, thousands of times) alongside an image, and asked the model to describe the food in the image.</p>
 
       <table>
         <tr><th>Context setting</th><th>Prompt size</th><th>Success</th><th>Latency</th></tr>
@@ -250,9 +250,9 @@ pip install openai pillow transformers accelerate
 
       <p>Three things will save you time:</p>
 
-      <p><strong>Use a nightly vLLM build.</strong> The stable release at the time of writing does not support <code>Qwen3_5ForConditionalGeneration</code>. The model card points to the latest vLLM path for a reason.</p>
+      <p><strong>Use a nightly vLLM build.</strong> The stable release at the time of writing doesn't support <code>Qwen3_5ForConditionalGeneration</code>. The model card points to the latest vLLM path for a reason.</p>
 
-      <p><strong>Install python3-dev before launching.</strong> The missing <code>Python.h</code> error during Triton compilation is not intuitive, and it happens after you've already waited for the model to download.</p>
+      <p><strong>Install python3-dev before launching.</strong> The missing <code>Python.h</code> error during Triton compilation isn't intuitive, and it happens after you've already waited for the model to download.</p>
 
       <p> The server can initialize at 262,144 context, but the KV cache on a single A100-SXM4-80GB physically holds about 74k tokens. Requests exceeding that will queue or fail at runtime. This distinction matters when making claims about long-context capability.</p>
 

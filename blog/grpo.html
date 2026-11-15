@@ -65,7 +65,7 @@
       <h1>What Does GRPO Actually Optimize?</h1>
       <p><a href="../pages/misc.html" class="back-link">← Back to Misc</a></p>
 
-<p>This post is about what GRPO changes in the learning update. You sample a few answers to the same prompt, score them, and normalize inside the group before those scores multiply the gradient. The rest of the blog follows what that normalization keeps, what it throws out, and how clipping and a KL penalty sit on top.</p>
+<p>This blog is about what GRPO changes in the learning update. You sample a few answers to the same prompt, score them, and normalize inside the group before those scores multiply the gradient. The rest of the blog follows what that normalization keeps, what it throws out, and how clipping and a KL penalty sit on top.</p>
 
 <p>Imagine two translation prompts. On the first, the four translations are almost the same. On the second, they run from wrong to good. After normalization, the almost-same prompt can still get order-one learning weights. The raw scores dropped out. Why?</p>
 

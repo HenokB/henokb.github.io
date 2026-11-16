@@ -65,19 +65,15 @@
       <h1>What Does GRPO Actually Optimize?</h1>
       <p><a href="../pages/misc.html" class="back-link">← Back to Misc</a></p>
 
-<p>This blog is about what GRPO changes in the learning update. You sample a few answers to the same prompt, score them, and normalize inside the group before those scores multiply the gradient. The rest of the blog follows what that normalization keeps, what it throws out, and how clipping and a KL penalty sit on top.</p>
+<p>Group Relative Policy Optimization is usually described as a simple recipe. Sample a few answers to the same prompt, score them, and upweight the better ones. That description skips the step that actually changes the update. After we subtract the group mean and divide by the group's spread, "better" doesn't mean a higher raw score. It means higher than the other samples from the same prompt, measured in that prompt's own units.</p>
 
-<p>Imagine two translation prompts. On the first, the four translations are almost the same. On the second, they run from wrong to good. After normalization, the almost-same prompt can still get order-one learning weights. The raw scores dropped out. Why?</p>
+<p>This post walks through that step. We start from the reward we want, see what a baseline does, and then look at what group normalization keeps and what it throws away. After that we put the practical pieces back on: an old policy, a probability ratio, clipping, averaging over tokens, and usually a KL penalty. GRPO optimizes a clipped surrogate built from relative rewards, often with a penalty for moving away from a reference policy. The expected update doesn't generally equal the gradient of the original average reward. Normalization is one reason.</p>
 
-<p>The usual explanation is: sample a few answers, score them, and upweight the better ones. That skips the step that changes the update. After you subtract the group mean and divide by the group&#x27;s spread, &quot;better&quot; doesn&#x27;t mean a higher raw score. It means higher than the other samples from the same prompt, measured in that prompt&#x27;s own units.</p>
-
-<p>Multiply every score by ten, or add the same constant to all of them, and the normalized update doesn&#x27;t move. Change the gaps between scores, and it does. A KL penalty is a separate choice. I want to take those pieces apart before putting them back together.</p>
-
-<p>GRPO optimizes a clipped surrogate built from relative rewards, often with a penalty for moving away from a reference policy. The expected update doesn&#x27;t generally equal the gradient of the original average reward. Normalization is one reason.</p>
+<p>A small example makes the issue concrete. Imagine two translation prompts. On the first, the four translations are almost the same. On the second, they run from wrong to good. After normalization, the almost-same prompt can still get order-one learning weights. The raw scores dropped out. Why? Multiply every score by ten, or add the same constant to all of them, and the normalized update doesn't move. Change the gaps between scores, and it does. A KL penalty is a separate choice. I want to take those pieces apart before putting them back together.</p>
 
 <h2>1. Start with the reward we actually want</h2>
 
-<p>The objective is only &quot;get a higher score on average.&quot; The annoying part is that the translation is a sample, so you can&#x27;t backpropagate through the words.</p>
+<p>The objective we start from is only "get a higher score on average." The difficulty is that the translation is a sample, so we can't backpropagate through the words.</p>
 
 <p>Let \(x\) be a source sentence together with the translation instruction, and let \(y\) be a complete translation sampled from a policy \(\pi_\theta(y\mid x)\). Assume prompts come from a fixed distribution \(d(x)\) and the reward function \(R(x,y)\) is fixed during the policy update. Our starting objective is</p>
 
@@ -96,19 +92,19 @@
 &amp;=\mathbb E_y[R(x,y)\nabla_\theta\log\pi_\theta(y\mid x)].
 \end{aligned}\]</div>
 
-<p>This is the score-function identity behind REINFORCE. We differentiate the model’s log-probability and use the reward as a weight. We don&#x27;t need a derivative of the reward with respect to the sampled tokens.</p>
+<p>This is the score-function identity behind REINFORCE. Put simply, we differentiate the model's log-probability and use the reward as a weight. We don't need a derivative of the reward with respect to the sampled tokens.</p>
 
 <p>For an autoregressive model,</p>
 
 <div class="equation">\[\log\pi_\theta(y\mid x)=\sum_{t=1}^{T}\log\pi_\theta(y_t\mid x,y_{&lt;t}).\]</div>
 
-<p>So a sequence-level reward can weight the log-probability gradients of all tokens in the translation. This gives a learning signal, although it doesn&#x27;t tell us which particular word caused the translation to receive a low score.</p>
+<p>So a sequence-level reward can weight the log-probability gradients of every token in the translation. That gives us a learning signal. It doesn't tell us which particular word caused the translation to receive a low score.</p>
 
 <h2>2. A baseline changes the estimator</h2>
 
-<p>A raw reward pushes every sample the same way, only harder or softer. A baseline asks something else: was this translation better than usual for this prompt?</p>
+<p>A raw reward pushes every sample in the same direction, only harder or softer. A baseline asks a different question: was this translation better than usual for this prompt?</p>
 
-<p>Raw rewards can produce a noisy gradient estimate. A common solution is to subtract a baseline \(b(x)\) that doesn&#x27;t depend on the sampled translation:</p>
+<p>Raw rewards can produce a noisy gradient estimate. The usual fix is to subtract a baseline \(b(x)\) that doesn't depend on the sampled translation:</p>
 
 <div class="equation">\[\nabla_\theta J_x
 =\mathbb E_y[(R(x,y)-b(x))\nabla_\theta\log\pi_\theta(y\mid x)].\]</div>
@@ -118,13 +114,13 @@
 <div class="equation">\[\mathbb E_y[b(x)\nabla_\theta\log\pi_\theta(y\mid x)]
 =b(x)\nabla_\theta\sum_y\pi_\theta(y\mid x)=0.\]</div>
 
-<p>A suitable baseline can reduce variance without changing the expected gradient. It changes the reference point: a translation gets a positive weight when it scores above the baseline and a negative weight when it scores below it. The baseline is treated as fixed when computing this policy gradient, even if another model estimates it.</p>
+<p>A suitable baseline can reduce variance without changing the expected gradient. What changes is the reference point. A translation gets a positive weight when it scores above the baseline, and a negative weight when it scores below it. We treat the baseline as fixed when we compute this policy gradient, even if another model is the thing that estimated it.</p>
 
 <p>The expected reward is a natural baseline, but it isn&#x27;t always the variance-minimizing one. For a scalar baseline minimizing the gradient estimator’s total variance, the optimum also depends on the squared norm of the log-probability gradient. “Subtract the mean” is useful; it isn&#x27;t a general proof of minimum variance.</p>
 
 <h3>The sample mean needs a small qualification</h3>
 
-<p>What happens when an answer helps set the baseline it is judged against?</p>
+<p>There is a small catch. What happens when an answer helps set the baseline it is judged against?</p>
 
 <p>Suppose we draw \(G\) independent translations for one prompt and use their mean reward \(\bar r\) as the baseline. Let \(s_i=\nabla_\theta\log\pi_\theta(y_i\mid x)\). Since \(r_i\) contributes to its own baseline,</p>
 
@@ -143,7 +139,7 @@ r_i-b_{-i}=\frac G{G-1}(r_i-\bar r).\]</div>
 
 <h2>3. What group normalization keeps and removes</h2>
 
-<p>Divide by the group&#x27;s standard deviation and two prompts can get the same update: one where every translation is bad, and one where every translation is good. What remains is the spacing inside the group, not the absolute scores.</p>
+<p>Dividing by the group's standard deviation changes the update again. Two prompts can now get the same update: one where every translation is bad, and one where every translation is good. What remains is the spacing inside the group, not the absolute scores.</p>
 
 <p>GRPO replaces a learned critic with information from multiple responses to the same prompt. In the outcome-reward setting, it assigns a group-relative advantage to each response. This construction was introduced in <a href="https://arxiv.org/html/2402.03300v3#S4.SS1" target="_blank" rel="noopener">DeepSeekMath, Section 4.1</a>.</p>
 
@@ -168,7 +164,7 @@ s_r=\sqrt{\frac1G\sum_i(r_i-\bar r)^2},\qquad
 
 <p>With \(\varepsilon=0\), the advantages are unchanged. This remains true if each prompt has its own positive scale. GRPO therefore removes absolute reward offsets and units within a prompt. A group of uniformly poor translations can produce the same advantages as a group of good translations with the same relative spacing.</p>
 
-<p>This doesn&#x27;t make GRPO purely rank-based for general \(G\). A nonlinear transformation can change the distances between scores, and therefore the normalized advantages, even when it preserves every ranking. With a non-negligible \(\varepsilon\), even positive scaling is no longer exactly invariant.</p>
+<p>This doesn't make GRPO purely rank-based for a general group size. A nonlinear transformation can change the distances between scores, and therefore the normalized advantages, even when it preserves every ranking. If \(\varepsilon\) isn't negligible, even positive scaling is no longer exactly invariant.</p>
 
 <p>There is also a useful distinction between <strong>zero variation</strong> and <strong>small variation</strong>. If every reward is identical, all advantages are zero. But when the scores differ slightly and \(s_r\) is still much larger than \(\varepsilon\), normalization can turn those small differences into order-one weights. If those differences mostly come from measurement noise, the algorithm will still act on them.</p>
 
@@ -187,7 +183,7 @@ s_r=\sqrt{\frac1G\sum_i(r_i-\bar r)^2},\qquad
 
 <h2>4. The full objective adds more choices</h2>
 
-<p>The gradient above is the on-policy core. The loss people train has extra switches on top of it: an old policy, a probability ratio, clipping, averaging over tokens, and usually a KL term. Each switch changes what &quot;the GRPO update&quot; means.</p>
+<p>The gradient above is the on-policy core. The loss people actually train has extra switches on top of it: an old policy, a probability ratio, clipping, averaging over tokens, and usually a KL term. Each switch changes what "the GRPO update" means.</p>
 
 <p>So far, we have considered an on-policy reward gradient. Practical GRPO also uses a policy snapshot \(\pi_{\mathrm{old}}\) to generate responses, a probability ratio, clipping, and often a reference-policy penalty.</p>
 
@@ -244,7 +240,7 @@ s_r=\sqrt{\frac1G\sum_i(r_i-\bar r)^2},\qquad
 
 <h2>5. Why two responses are an interesting special case</h2>
 
-<p>With two samples, the size of the score gap drops out. The update just pushes one translation up and the other down. That looks like DPO. It isn&#x27;t the same loss.</p>
+<p>Two samples are a useful special case. The size of the score gap drops out, and the update just pushes one translation up and the other down. That looks like DPO. It isn't the same loss.</p>
 
 <p>With \(G=2\), unequal rewards, population standard deviation, and \(\varepsilon=0\), the advantages are simply \(+1\) and \(-1\). The size of the reward gap disappears. Equal rewards give zero advantages, using the zero-variance convention.</p>
 
@@ -253,7 +249,7 @@ s_r=\sqrt{\frac1G\sum_i(r_i-\bar r)^2},\qquad
 <div class="equation">\[\nabla_\theta\log\pi_\theta(y_+\mid x)
 -\nabla_\theta\log\pi_\theta(y_-\mid x).\]</div>
 
-<p>This helps explain the connection developed by Wu et al. in <a href="https://arxiv.org/html/2510.00977v1" target="_blank" rel="noopener">It Takes Two: Your GRPO Is Secretly DPO</a>. The comparison has a preference-learning structure: encourage one response and discourage another.</p>
+<p>This is the connection in <a href="https://arxiv.org/html/2510.00977v1" target="_blank" rel="noopener">It Takes Two: Your GRPO Is Secretly DPO</a>. The comparison has a preference-learning structure: encourage one response and discourage another.</p>
 
 <p>But the objectives aren&#x27;t identical. <a href="https://arxiv.org/abs/2305.18290" target="_blank" rel="noopener">DPO</a> uses a logistic loss on a reference-adjusted log-probability margin. Its gradient contains a margin-dependent weight. Standard offline DPO also trains on an existing preference dataset, while GRPO generates responses from a changing policy. A shared pairwise direction doesn&#x27;t remove these differences.</p>
 
@@ -273,13 +269,13 @@ s_r=\sqrt{\frac1G\sum_i(r_i-\bar r)^2},\qquad
 
 <p>This also shows why larger groups do more than improve a statistical estimate. They can change the expected update. Dropping tied groups and then averaging only over the surviving groups changes it again, by conditioning training on receiving a nonzero signal.</p>
 
-<figure><img src="figures/wu-figure1a.svg" alt="Published reward curve for Qwen-1.5B comparing group sizes two and sixteen."><img src="figures/wu-figure1b.svg" alt="Published validation-score curve for Qwen-1.5B comparing group sizes two and sixteen."><figcaption>Figure 4. Qwen-1.5B trained on MATH. Top: training reward. Bottom: validation score. Group size 2 versus 16. Not the toy run below.</figcaption></figure>
+<figure><img src="figures/wu-figure1a.svg" alt="Published reward curve for Qwen-1.5B comparing group sizes two and sixteen."><img src="figures/wu-figure1b.svg" alt="Published validation-score curve for Qwen-1.5B comparing group sizes two and sixteen."><figcaption>Figure 4. Qwen-1.5B trained on MATH. Top: training reward. Bottom: validation score. Group size 2 versus 16. This is the published run, not the sample run below.</figcaption></figure>
 
 <p>The paper reports competitive results with two responses and lower training cost in its tested settings. One reporting detail needs clarification: the figure’s axes are labeled in minutes and extend to roughly 30,000, whereas Table 1 lists much shorter training times in hours. I would use these plots to inspect the reported learning trends, rather than calculate a speedup from the axes. The reasoning results also leave open how well the same group size works with continuous translation rewards.</p>
 
 <h2>6. A small translation-selection experiment</h2>
 
-<p>The math says normalization throws away scale. I checked that on a tiny selection problem, not on a language model. There is no shared network and no generated text, only four fixed answers per prompt.</p>
+<p>The math says normalization throws away scale. I checked that claim on a small selection problem, not on a language model. There is no shared network and no generated text, only four fixed answers per prompt.</p>
 
 <p>To isolate reward normalization, I use a deliberately small setup. Each of four source sentences has four fixed candidate translations. Two prompts translate into French and two into Spanish. Each prompt has its own categorical policy over the candidates, initialized uniformly. There is no pretrained language model and no parameter sharing between prompts.</p>
 

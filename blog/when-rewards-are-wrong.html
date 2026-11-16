@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>When the Reward Is Wrong, What Does GRPO Learn? - Henok Biadglign Ademtew</title>
+  <meta name="description" content="A reward model can rank translations incorrectly, and GRPO can turn that error into a confident policy update." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../stylesheets/main.css">
+  <style>
+    .blog-content { line-height: 1.8; }
+    .blog-content h1 { font-size: 32px; font-weight: 500; line-height: 1.3; margin: 0 0 24px 0; color: #1a1a1a; letter-spacing: -0.5px; }
+    .blog-content h2 { font-size: 24px; font-weight: 500; text-transform: none; letter-spacing: -0.3px; margin: 48px 0 20px 0; color: #1a1a1a; border-bottom: none; padding-bottom: 0; }
+    .blog-content h3 { font-size: 20px; font-weight: 500; margin: 32px 0 12px 0; color: #1a1a1a; letter-spacing: -0.2px; }
+    .blog-content p { margin: 0 0 16px 0; color: #4a5568; font-size: 17px; line-height: 1.75; }
+    .blog-content strong { font-weight: 600; color: #1a1a1a; }
+    .blog-content em { font-style: italic; }
+    .blog-content hr { border: none; border-top: 1px solid #e8e8e8; margin: 32px 0; }
+    .blog-content pre, .blog-content code { font-family: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace; font-size: 14px; line-height: 1.6; }
+    .blog-content pre { background: #f5f5f5; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #e8e8e8; }
+    .blog-content pre code { background: transparent; padding: 0; border: none; color: #1a1a1a; font-size: 13px; }
+    .blog-content code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 15px; border: 1px solid #e8e8e8; color: #d63384; }
+    .blog-content ul, .blog-content ol { margin: 16px 0; padding-left: 24px; color: #4a5568; }
+    .blog-content li { margin-bottom: 8px; line-height: 1.7; }
+    .blog-content a { color: #2563eb; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s ease; }
+    .blog-content a:hover { color: #1d4ed8; border-bottom-color: #2563eb; }
+    .blog-content table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 15px; }
+    .blog-content table th, .blog-content table td { padding: 12px; text-align: left; border: 1px solid #e8e8e8; }
+    .blog-content table th { background: #f5f5f5; font-weight: 500; color: #1a1a1a; }
+    .blog-content table td { color: #4a5568; }
+    .blog-content table tr:nth-child(even) { background: #fafafa; }
+    .blog-content figure { margin: 28px 0; }
+    .blog-content figure img { width: 100%; height: auto; display: block; border: 1px solid #e8e8e8; border-radius: 6px; background: #fafafa; }
+    .blog-content figcaption { margin-top: 10px; font-size: 14px; line-height: 1.6; color: #6b7280; }
+    .blog-content .equation { overflow-x: auto; margin: 20px 0; padding: 8px 4px; }
+    .blog-content .byline { margin-top: -8px; margin-bottom: 28px; font-size: 15px; color: #6b7280; }
+    .blog-content .callout { border-left: 3px solid #e5e7eb; padding: 2px 0 2px 16px; margin: 22px 0 26px; }
+    .blog-content .callout .kicker { font-weight: 600; color: #1a1a1a; font-size: 15px; margin-bottom: 6px; }
+    .blog-content .caption-note { font-size: 14px; line-height: 1.6; color: #6b7280; }
+    .blog-content details { margin: 8px 0 28px; }
+    .blog-content summary { cursor: pointer; color: #1a1a1a; font-size: 15px; margin-bottom: 8px; }
+    .back-link { display: inline-block; margin-bottom: 32px; font-size: 15px; color: #4a5568; }
+    .back-link:hover { color: #2563eb; }
+  </style>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      svg: { fontCache: 'local' },
+      options: { enableMenu: false }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../pages/research.html">Research</a></li>
+        <li><a href="../pages/code.html">Code</a></li>
+        <li><a href="../pages/misc.html">Misc</a></li>
+      </ul>
+    </nav>
+
+    <div class="blog-content">
+      <h1>When the Reward Is Wrong, What Does GRPO Learn?</h1>
+      <p><a href="../pages/misc.html" class="back-link">← Back to Misc</a></p>
+      <p>The <a href="grpo.html">last blog</a> was about what GRPO actually optimizes. You score a few answers to the same prompt, normalize inside the group, and the raw scores drop out. The update only sees which answer was better than the others from that prompt.</p>
+      <p>This one focuses on a different failure. What if the reward gets that ranking wrong? GRPO doesn't check the translation. It trains on the order the scores give it. The rest of the blog follows what that does to the update, a small sample run, and what is worth measuring before you optimize against a reward.</p>
+      
+      <p>Imagine that a translation model generates two answers. The first preserves the meaning. The second sounds natural but quietly drops a negation. A reward model assigns the higher score to the second. GRPO doesn't know which translation is faithful. It sees two numbers, decides which response won, and updates the policy accordingly.</p>
+      <p>That isn't a criticism unique to GRPO. Any method trained to optimize a flawed reward can learn the wrong behavior. But GRPO makes the problem unusually concrete: the update is built from <em>comparisons within a group</em>. A reward model doesn't need to estimate absolute translation quality perfectly; it does need to provide a useful relative signal for the candidates the policy currently generates.</p>
+      <p>My question in this blog is deliberately narrower than “Are learned translation metrics good?” It is: <strong>what happens to the policy gradient when the reward gets the order of two responses wrong, and how should we detect that before optimizing the model against it?</strong></p>
+      <div class="callout"><div class="kicker">What this blog establishes</div><p>In a simplified two-response setting, symmetric reward-ordering errors multiply the expected update by <strong>\(1-2\eta\)</strong>, where \(\eta\) is the probability of reversing the correct preference. With systematic misranking, a higher proxy reward can coincide with worse underlying quality. The full LLM version is more complicated; the simplified result is a mechanism, not a universal theorem about every GRPO implementation.</p></div>
+
+      <h2 id="the-example">1. A translation that fools the reward</h2>
+      <p>Consider the English sentence: <em>“The meeting was postponed, not cancelled.”</em> The important detail isn't merely that a meeting didn't happen. It is that the meeting was <em>postponed rather than cancelled</em>.</p>
+      <table><thead><tr><th></th><th>Candidate A, faithful</th><th>Candidate B, omission</th></tr></thead><tbody><tr><td>Translation</td><td>La reunión se pospuso, no se canceló.</td><td>La reunión fue pospuesta.</td></tr><tr><td>True quality (constructed)</td><td>1.00</td><td>0.30</td></tr><tr><td>Proxy reward (constructed)</td><td>0.70</td><td>1.00</td></tr><tr><td>Two-sample GRPO advantage</td><td>−1</td><td>+1</td></tr></tbody></table><p class="caption-note">Figure 1. A made-up pair. The reward prefers the omission, so that translation gets advantage +1 and the faithful one gets −1.</p>
+      <p>GRPO rewards the omission and penalizes the faithful translation. Standardization can't repair the reversal: subtracting the mean and dividing by a positive number doesn't change which candidate scores higher.</p>
+      <p>In translation, the hardest comparisons may be subtle. One candidate preserves a named entity but mistranslates tense; another has excellent fluency but misses a negation. Another conveys the same meaning with a paraphrase a reference-based metric doesn't expect. Whether these errors occur for a particular metric and language is an empirical question. The optimization consequence, however, is straightforward once an incorrect ordering enters the reward.</p>
+
+      <h2 id="what-grpo-learns">2. What GRPO actually receives</h2>
+      <p>For a prompt \(x\), draw \(G\) candidate outputs \(y_{1},\ldots,y_{G}\) from the current policy. A reward function produces \(r_{i}=R(x,y_{i})\). In outcome-reward GRPO, a commonly used advantage estimator is</p>
+      <div class="equation">\[A_{i}=\frac{r_{i}-\bar{r}}{s_{r}+\varepsilon},\quad \bar{r}=\frac{1}{G}\sum_{j=1}^{G} r_{j},\quad s_{r}=\sqrt{\frac{1}{G}\sum_{j=1}^{G}(r_{j}-\bar{r})^{2}}.\]</div>
+      <p>Ignoring clipping, response-length normalization, and reference-policy regularization for a moment, the on-policy reward update has the shape</p>
+      <div class="equation">\[\hat{g}=\frac{1}{G}\sum_{i=1}^{G} A_{i}\,\nabla_{\theta}\log\pi_{\theta}(y_{i}\mid x).\]</div>
+      <p><a href="https://arxiv.org/abs/2402.03300" target="_blank" rel="noopener">DeepSeekMath</a> introduced GRPO with a PPO-style surrogate and group-relative rewards. Its actual training objective has additional decisions, policy ratios, clipping, token aggregation, and often a KL penalty, so the equation above describes a useful <em>on-policy core</em>, not a complete implementation.</p>
+      <p>There are two distinctions worth keeping in mind:</p>
+      <ul>
+        <li><strong>Positive affine calibration is mostly removable.</strong> If every reward in a prompt is transformed to \(ar_{i}+b\) with \(a&gt;0\), the standardized advantages are unchanged when \(\epsilon\) is negligible.</li>
+        <li><strong>Incorrect orderings aren't removable.</strong> If the reward prefers a worse candidate, the corresponding sign of the preference remains wrong after normalization. With more than two responses, nonlinear score changes can also alter advantage magnitudes without changing rankings.</li>
+      </ul>
+      <p>So a high-quality reward for GRPO isn't simply one whose numerical scale resembles human ratings. What matters is whether the induced <em>relative training signal</em> agrees with the behavior we actually want.</p>
+
+      <h2 id="the-derivation">3. The two-response case: an exact result</h2>
+      <p>We can make this precise without a large model. Assume a single prompt and exactly two possible actions: \(A\), the correct translation, and \(B\), the incorrect one. Let the policy assign</p>
+      <div class="equation">\[p=\pi_{\theta}(A)=\sigma(\theta),\quad \pi_{\theta}(B)=1-p.\]</div>
+      <p>Set true quality to \(q(A)=1\) and \(q(B)=0\). The expected true-quality objective is \(J^{*}(\theta)=p\), so its gradient is</p>
+      <div class="equation">\[\nabla_{\theta}J^{*}(\theta)=p(1-p).\]</div>
+      <p>Now sample two independent responses. A mixed pair \((A,B)\) or \((B,A)\) occurs with probability \(2p(1-p)\). If the reward correctly prefers \(A\), group-normalized advantages are \(+1\) for \(A\) and \(-1\) for \(B\) (using population standard deviation and \(\varepsilon \to 0\)). The average score-function update from that mixed pair is</p>
+      <div class="equation">\[\frac{1}{2}\left[\nabla_{\theta}\log p-\nabla_{\theta}\log(1-p)\right]=\frac{1}{2}.\]</div>
+      <p>If the reward gets the ranking backward, the same contribution is \(-\frac{1}{2}\). Suppose the reward reverses the correct preference with probability \(\eta\), independently of the policy state, conditional on comparing the distinct actions. Then</p>
+      <div class="equation">\[\begin{aligned}\mathbb{E}[\hat{g}] &amp; =2p(1-p)[(1-\eta)\frac{1}{2}+\eta(-\frac{1}{2})] \\ &amp; =p(1-p)(1-2\eta).\end{aligned}\]</div>
+      <figure><img src="figures/wrong-reward-1.svg" alt="Figure"><figcaption>Figure 2. Share of the ideal update that remains as the chance of a flipped ranking grows. It hits zero at 50% and reverses after that.</figcaption></figure>
+      <p>The intuition is simple. When \(\eta=0\), the reward always identifies the better response. At \(\eta=0.25\), the expected update is half as large. At \(\eta=0.5\), correct and incorrect preferences cancel in expectation. Above 50% error, the expected direction reverses: we are training against our intended preference.</p>
+      <div class="callout"><div class="kicker">Note</div><p>This isn't a statement that “GRPO fails whenever reward accuracy is below 50%” across a real dataset. It is an exact result for the specified binary model and sampling assumptions. In actual training, quality margins, multiple response types, prompt mixtures, systematic biases, correlated errors, shared model parameters, and KL penalties all matter.</p></div>
+      <h3>What if the reward is noisy rather than systematically wrong?</h3>
+      <p>Suppose the true quality difference is \(\Delta=q(A)-q(B)&gt;0\), but reward scores contain independent Gaussian noise, \(r_{i}=q(i)+\epsilon_{i}\), with \(\epsilon_{i} \sim N(0,\sigma^{2})\). Since \(\epsilon_{A}-\epsilon_{B} \sim N(0,2\sigma^{2})\), the probability of ranking the two candidates incorrectly is</p>
+      <div class="equation">\[\eta=\Pr[r_{A}&lt;r_{B}]=\Phi\!\left(-\frac{\Delta}{\sigma\sqrt{2}}\right).\]</div>
+      <p>where \(\Phi\) is the standard normal cumulative distribution function. The smaller the true quality gap relative to metric noise, the closer the preference is to a coin flip.</p>
+      <figure><img src="figures/wrong-reward-2.svg" alt="Figure"><figcaption>Figure 3. A sample plot. Chance of ranking two answers backward when score noise is large compared with the true quality gap.</figcaption></figure>
+      <p>For translation, candidate pairs close in quality are exactly where one often wants fine-grained feedback. But they can also be where the ranking signal is hardest to trust. Conversely, two translations with a large quality gap may be easy to rank but offer relatively little insight into subtle adequacy errors.</p>
+
+      <h2 id="two-failures">4. Two ways rewards go wrong, and why they are different</h2>
+      <table><thead><tr><th>Failure mode</th><th>What happens</th><th>Implication for training</th></tr></thead><tbody>
+        <tr><td><strong>Random misranking</strong></td><td>Repeated judgments of the same pair can disagree; easy pairs may be reliable while near-ties aren't.</td><td>Can weaken or randomize the expected preference signal; multiple independent judgments may help under suitable assumptions.</td></tr>
+        <tr><td><strong>Systematic misranking</strong></td><td>The reward repeatedly prefers a fluent omission, wrong named entity, or metric-friendly wording.</td><td>Additional optimization can reliably reinforce the wrong behavior; more rollouts alone can't fix a biased objective.</td></tr>
+        <tr><td><strong>Score saturation or ties</strong></td><td>Different-quality candidates receive identical or rounded scores.</td><td>Zero reward variation produces zero group-relative advantages for that group.</td></tr>
+        <tr><td><strong>Multiple reward conflicts</strong></td><td>Fluency, adequacy, length, and formatting rewards favor different candidates.</td><td>Combining and normalizing rewards can hide distinctions among candidate outcomes.</td></tr>
+      </tbody></table>
+      <p>The first two failure modes motivate different responses. If errors are symmetric and approximately random, better calibration, repeated judgments, or noise correction may help. If the metric consistently confuses fluency with faithfulness, more consistent scoring doesn't solve the problem. We need a reward that measures the desired property more accurately.</p>
+      <p>This distinction matters for proposed reward-model fixes. <a href="https://proceedings.mlr.press/v306/mansouri26a.html" target="_blank" rel="noopener">Noise-corrected GRPO</a> studies reward-corruption models and proposes corrected group-based updates under explicit Bernoulli-noise assumptions. That is evidence that noise modeling can be useful, not a guarantee that a correction derived for reward flips will remove an unknown, systematic machine-translation bias.</p>
+
+      <h2 id="aggregate-metrics">5. Why a metric can look accurate and still be dangerous for GRPO</h2>
+      <p>When we evaluate translation metrics, we often report correlations with human scores over a held-out dataset. That is valuable, but it doesn't completely answer the question GRPO asks: <em>which member of this particular rollout group should receive the positive advantage?</em></p>
+      <p>Consider a constructed scenario. A reward model correctly ranks 95% of easy pairs and 55% of difficult near-ties. On a static evaluation split containing 80% easy pairs, accuracy is</p>
+      <div class="equation">\[0.8(0.95)+0.2(0.55)=0.87.\]</div>
+      <p>If an improving policy now generates mostly plausible candidates, suppose only 20% of its pairs are easy. Under the same pair-conditional error rates, the accuracy relevant to training becomes</p>
+      <div class="equation">\[0.2(0.95)+0.8(0.55)=0.63.\]</div>
+      <p>The point isn't that every policy necessarily moves toward near-ties. Rather, evaluation and training can sample <em>different kinds of comparisons</em>. A metric that looks good on a general benchmark may fail on the conditional distribution of candidates produced by a strong, continually updated policy.</p>
+      <p>For this reason, I wouldn't treat sentence-level Pearson or Spearman correlation as sufficient reward-model validation for GRPO. I would also measure <strong>pairwise concordance within generated groups</strong>, agreement on the top-ranked candidate, ties, near-tie behavior, and agreement on semantically consequential mistakes. Human disagreement and ambiguous cases should be reported rather than forced into confident binary labels.</p>
+
+      <h2 id="experiment">6. A controlled experiment: proxy reward goes up, quality goes down</h2>
+      <p>We can test the mechanism with a tiny categorical policy before spending a large rollout budget. This experiment intentionally doesn't train a language model. There are three fixed actions that stand in for possible translation types:</p>
+      <table><thead><tr><th>Action</th><th>Interpretation</th><th>True quality</th><th>Biased proxy reward</th></tr></thead><tbody>
+        <tr><td><strong>A</strong></td><td>Faithful translation</td><td>1.00</td><td>0.70</td></tr>
+        <tr><td><strong>B</strong></td><td>Fluent but meaning-changing omission</td><td>0.30</td><td>1.00</td></tr>
+        <tr><td><strong>C</strong></td><td>Severely incorrect response</td><td>0.05</td><td>0.10</td></tr>
+      </tbody></table>
+      <p>We compare two reward functions: an aligned reward equal to the constructed true quality, and a biased reward that prefers the omission. Each policy begins uniform over the three actions. Every update samples eight actions from the current policy, standardizes their group rewards, takes a single on-policy gradient-ascent step, and applies an exact KL penalty to the uniform reference distribution.</p>
+      <p>The setup uses 700 updates, learning rate 0.08, KL coefficient 0.04, standard-deviation stabilizer \(10^{-6}\), and 60 seeds (0-59). We hold the hyperparameters fixed between conditions. Because each batch produces just one update at the rollout policy, the PPO-style clipping mechanism would be inactive at that update. This isolates the group-normalized reward signal plus KL; it doesn't reproduce an autoregressive LLM training pipeline.</p>
+      <figure><img src="figures/wrong-reward-4.svg" alt="Figure"><figcaption>Figure 4. A sample run, mean over 60 seeds. Left: true quality. Right: under the biased reward, the proxy rises while true quality falls.</figcaption></figure>
+      <table><thead><tr><th>Measure</th><th>Initially</th><th>After 700 updates</th></tr></thead><tbody>
+        <tr><td>True quality, training on aligned reward</td><td>0.450</td><td><strong>0.996</strong></td></tr>
+        <tr><td>True quality, training on biased reward</td><td>0.450</td><td><strong>0.302</strong></td></tr>
+        <tr><td>Biased proxy reward, training on biased reward</td><td>0.600</td><td><strong>0.997</strong></td></tr>
+      </tbody></table>
+      <p>The biased policy becomes very good at maximizing the proxy by selecting the omission. That is exactly why its true quality gets worse. Notice that this isn't necessarily optimization instability. The policy is consistently learning what we asked it to learn; the reward specifies the wrong preference.</p>
+      <p>These numbers shouldn't be interpreted as expected losses in a real multilingual model. The action space has only three responses, the rewards are deterministic and hand-constructed, and there is no shared parameterization across prompts. It is a <em>mechanistic stress test</em>, useful for checking whether a proposed explanation is internally coherent.</p>
+      <div class="callout"><div class="kicker">What this sample run shows</div><p>It shows that group-normalized on-policy optimization doesn't protect a policy from a systematically incorrect ordering. It doesn't establish how often any specific translation metric misranks candidates, nor whether a particular reward fix improves Amharic, Yoruba, or another language. Answering those questions requires real candidate generations and independent quality judgments.</p></div>
+
+      <h2 id="papers">7. Some papers</h2>
+      <p>This problem sits at the intersection of three research areas: reward-model overoptimization, noise-robust policy optimization, and fine-grained MT evaluation. The interesting part is where those areas meet.</p>
+      <h3>Proxy optimization has a measurable failure mode</h3>
+      <p><a href="https://proceedings.mlr.press/v202/gao23h.html" target="_blank" rel="noopener">Scaling Laws for Reward Model Overoptimization</a> studies reward-model overoptimization using a synthetic setup in which a stronger model provides a stand-in for ground truth. Optimizing a learned proxy too aggressively can hurt ground-truth reward, and the relationship depends on the optimization method and scale. This sample run isn't a reproduction of that paper. It uses three fixed actions and a deliberately reversed reward.</p>
+      <h3>Reward noise can sometimes be modeled directly</h3>
+      <p><a href="https://proceedings.mlr.press/v306/mansouri26a.html" target="_blank" rel="noopener">Noise-corrected GRPO</a> studies group-based learning under reward corruption and introduces corrections after estimating reward flip probabilities. It reports improvements on the evaluated math and code tasks, including gains of up to 6.7 percentage points for math accuracy under its reported conditions. For translation, the difficult step is learning whether the errors resemble the assumed noise process. A metric's preference for fluent but incomplete translations could be systematic rather than a symmetric flip.</p>
+      <h3>Group-relative translation rewards are now an explicit research direction</h3>
+      <p>Perhaps the most directly relevant work is <a href="https://aclanthology.org/2026.emnlp-main.2283/" target="_blank" rel="noopener">GRRM: Group Relative Reward Modeling for Machine Translation</a>. It argues that evaluating candidates independently can miss the fine-grained distinctions required for within-group ranking. The paper proposes evaluating a group jointly, and reports improved ranking accuracy and downstream translation performance in its tested settings.</p>
+      <figure><img src="figures/grrm-figure1.jpg" alt="Two panels from GRRM Figure 1. Left: ranking accuracy for pointwise and groupwise scoring. Right: translation scores on Seed-X-Challenge."><figcaption>Figure 5. <a href="https://aclanthology.org/2026.emnlp-main.2283/" target="_blank" rel="noopener">GRRM</a>, Figure 1, on Seed-X-Challenge. Left: ranking accuracy, pointwise versus groupwise. Right: translation scores. The last pair on the left compares different systems.</figcaption></figure>
+      <p>The conclusion I take from this isn't that every judge should always score a whole group jointly. A groupwise judge can also exhibit order effects, correlated mistakes, or dependence on the candidate set. It is that <strong>we should evaluate the object the policy optimizer uses: relative judgments among actual rollout candidates.</strong></p>
+
+      <h2 id="conclusion">8. The reward is part of the algorithm</h2>
+      <p>In my <a href="grpo.html">previous GRPO blog</a>, the central observation was that reward normalization changes the effective optimization problem. This blog adds another layer: <strong>even a perfectly implemented group-relative update faithfully optimizes an incorrect comparison if the reward model provides one.</strong></p>
+      <p>For the simplest two-response policy, reward-ordering errors have an interpretable effect on the expected gradient. For more realistic language models, the failure can be entangled with clipping, KL, token weighting, reward saturation, shared parameters, and an evolving candidate distribution. That makes careful evaluation of the reward <em>during training</em> more important, not less.</p>
+      <p>The question I would ask before trusting an RL improvement is therefore not just “Did the reward go up?” It is <strong>“When the reward said this translation was better, how often was it actually right, and what mistakes did the policy learn from the times it was wrong?”</strong></p>
+
+      <h2>References</h2>
+        <ul>
+          <li><a href="https://arxiv.org/abs/2402.03300" target="_blank" rel="noopener">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a></li>
+          <li><a href="https://proceedings.mlr.press/v202/gao23h.html" target="_blank" rel="noopener">Scaling Laws for Reward Model Overoptimization</a></li>
+          <li><a href="https://proceedings.mlr.press/v306/mansouri26a.html" target="_blank" rel="noopener">Noise-corrected GRPO: From Noisy Rewards to Unbiased Gradients</a></li>
+          <li><a href="https://aclanthology.org/2026.emnlp-main.2283/" target="_blank" rel="noopener">GRRM: Group Relative Reward Modeling for Machine Translation</a></li>
+        </ul>
+    
+    </div>
+  </div>
+  <script src="../javascripts/nav.js"></script>
+</body>
+</html>
